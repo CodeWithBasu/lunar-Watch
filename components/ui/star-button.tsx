@@ -50,7 +50,7 @@ export const StarButton = ({ text = "WISHLIST", initialCount = 1284 }: StarButto
           )}
         >
           {/* Shine Sweep Effect */}
-          <div className="absolute top-0 bottom-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-[200%] skew-x-[-15deg] animate-shine pointer-events-none z-0" />
+          <div className="absolute top-0 bottom-0 left-0 w-[200%] h-full bg-gradient-to-r from-transparent via-yellow-300/40 to-transparent animate-shine pointer-events-none z-0" />
           
           <div className="z-10 transition group-hover:translate-x-4 peer-checked:group-hover:text-black">
             {text}
