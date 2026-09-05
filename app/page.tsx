@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Moon, ChevronLeft, ChevronRight } from "lucide-react"
+import { HorizontalThemeWipeToggle } from "@/components/ui/theme-wipe-toggle"
 
 interface MoonPhase {
   phase: number
@@ -311,12 +312,15 @@ export default function MoonTracker() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <header className="border-b border-gray-100">
-        <div className="max-w-4xl mx-auto px-6 py-12">
+    <div className="min-h-screen bg-white dark:bg-gray-950 transition-colors duration-300">
+      <header className="border-b border-gray-100 dark:border-gray-900">
+        <div className="max-w-4xl mx-auto px-6 py-12 relative">
+          <div className="absolute right-6 top-6 sm:right-12 sm:top-12">
+            <HorizontalThemeWipeToggle direction="left" />
+          </div>
           <div className="text-center">
-            <h1 className="text-3xl font-mono text-gray-900 tracking-wide font-semibold">Moon Tracker</h1>
-            <p className="text-gray-500 mt-2 font-mono text-sm">{"Lunar phase calendar, by I Putu Dana Putra."}</p>
+            <h1 className="text-3xl font-mono text-gray-900 dark:text-gray-100 tracking-wide font-semibold">Moon Tracker</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-2 font-mono text-sm">{"Lunar phase calendar, by I Putu Dana Putra."}</p>
           </div>
         </div>
       </header>
@@ -326,11 +330,11 @@ export default function MoonTracker() {
           <div className="flex items-center justify-center gap-6">
             <button
               onClick={() => navigateDate("prev")}
-              className="p-2 hover:bg-gray-50 rounded-full transition-colors"
+              className="p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-full transition-colors"
             >
-              <ChevronLeft className="w-5 h-5 text-gray-400" />
+              <ChevronLeft className="w-5 h-5 text-gray-400 dark:text-gray-500" />
             </button>
-            <h2 className="text-xl font-mono font-light text-gray-900">
+            <h2 className="text-xl font-mono font-light text-gray-900 dark:text-gray-100">
               {selectedDate.toLocaleDateString("en-US", {
                 month: "long",
                 day: "numeric",
@@ -339,38 +343,38 @@ export default function MoonTracker() {
             </h2>
             <button
               onClick={() => navigateDate("next")}
-              className="p-2 hover:bg-gray-50 rounded-full transition-colors"
+              className="p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-full transition-colors"
             >
-              <ChevronRight className="w-5 h-5 text-gray-400" />
+              <ChevronRight className="w-5 h-5 text-gray-400 dark:text-gray-500" />
             </button>
           </div>
 
           <div className="space-y-6">
             {currentMoon && <MoonVisual phase={currentMoon.phase} />}
             <div>
-              <h3 className="text-2xl font-mono text-gray-900 mb-2 font-medium">
+              <h3 className="text-2xl font-mono text-gray-900 dark:text-gray-100 mb-2 font-medium">
                 {currentMoon && getMoonPhaseName(currentMoon.phase)}
               </h3>
-              <p className="text-gray-500 font-mono text-sm">
+              <p className="text-gray-500 dark:text-gray-400 font-mono text-sm">
                 {currentMoon && `${currentMoon.illumination.toFixed(0)}% illuminated`}
               </p>
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-8 max-w-md mx-auto pt-8 border-t border-gray-100">
+          <div className="grid grid-cols-3 gap-8 max-w-md mx-auto pt-8 border-t border-gray-100 dark:border-gray-800">
             <div className="text-center">
-              <p className="text-gray-400 font-mono text-xs uppercase tracking-wide mb-1">Age</p>
-              <p className="text-gray-900 font-mono text-sm">{currentMoon && `${currentMoon.age.toFixed(0)}d`}</p>
+              <p className="text-gray-400 dark:text-gray-500 font-mono text-xs uppercase tracking-wide mb-1">Age</p>
+              <p className="text-gray-900 dark:text-gray-100 font-mono text-sm">{currentMoon && `${currentMoon.age.toFixed(0)}d`}</p>
             </div>
             <div className="text-center">
-              <p className="text-gray-400 font-mono text-xs uppercase tracking-wide mb-1">Distance</p>
-              <p className="text-gray-900 font-mono text-sm">
+              <p className="text-gray-400 dark:text-gray-500 font-mono text-xs uppercase tracking-wide mb-1">Distance</p>
+              <p className="text-gray-900 dark:text-gray-100 font-mono text-sm">
                 {currentMoon && `${Math.round(currentMoon.distance / 1000)}k km`}
               </p>
             </div>
             <div className="text-center">
-              <p className="text-gray-400 font-mono text-xs uppercase tracking-wide mb-1">Phase</p>
-              <p className="text-gray-900 font-mono text-sm">
+              <p className="text-gray-400 dark:text-gray-500 font-mono text-xs uppercase tracking-wide mb-1">Phase</p>
+              <p className="text-gray-900 dark:text-gray-100 font-mono text-sm">
                 {currentMoon && `${(currentMoon.phase * 100).toFixed(0)}%`}
               </p>
             </div>
@@ -378,24 +382,24 @@ export default function MoonTracker() {
         </section>
 
         <section>
-          <h3 className="text-lg font-mono text-gray-900 mb-8 text-center font-semibold">Upcoming Events</h3>
+          <h3 className="text-lg font-mono text-gray-900 dark:text-gray-100 mb-8 text-center font-semibold">Upcoming Events</h3>
           <div className="space-y-4">
             {upcomingEvents.map((event, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between py-4 border-b border-gray-50 last:border-b-0"
+                className="flex items-center justify-between py-4 border-b border-gray-50 dark:border-gray-800/50 last:border-b-0"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
                     <MoonPhaseIcon eventType={event.type} />
                   </div>
                   <div>
-                    <p className="font-mono text-gray-900 text-sm font-medium">{event.name}</p>
-                    <p className="font-mono text-gray-500 text-xs">{formatDate(event.date)}</p>
+                    <p className="font-mono text-gray-900 dark:text-gray-200 text-sm font-medium">{event.name}</p>
+                    <p className="font-mono text-gray-500 dark:text-gray-400 text-xs">{formatDate(event.date)}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-mono text-gray-600 text-xs">{getDaysUntil(event.date)}</p>
+                  <p className="font-mono text-gray-600 dark:text-gray-400 text-xs">{getDaysUntil(event.date)}</p>
                 </div>
               </div>
             ))}
@@ -405,7 +409,7 @@ export default function MoonTracker() {
         <div className="text-center pt-8">
           <button
             onClick={() => setSelectedDate(new Date())}
-            className="px-6 py-2 border border-gray-200 hover:border-gray-300 font-mono text-sm text-gray-700 transition-colors"
+            className="px-6 py-2 border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 font-mono text-sm text-gray-700 dark:text-gray-300 transition-colors"
           >
             Today
           </button>
