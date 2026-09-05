@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Moon, ChevronLeft, ChevronRight } from "lucide-react"
 import { HorizontalThemeWipeToggle } from "@/components/ui/theme-wipe-toggle"
+import { AnimatedLogo } from "@/components/ui/animated-logo"
 
 interface MoonPhase {
   phase: number
@@ -319,6 +320,7 @@ export default function MoonTracker() {
             <HorizontalThemeWipeToggle direction="left" />
           </div>
           <div className="text-center">
+            <AnimatedLogo />
             <h1 className="text-3xl font-mono text-gray-900 dark:text-gray-100 tracking-wide font-semibold">Moon Tracker</h1>
             <p className="text-gray-500 dark:text-gray-400 mt-2 font-mono text-sm">{"Lunar phase calendar, by I Putu Dana Putra."}</p>
           </div>
