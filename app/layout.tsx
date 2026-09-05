@@ -15,6 +15,8 @@ export const metadata: Metadata = {
   generator: "v0.app",
 }
 
+import { SplashScreen } from "@/components/ui/splash-screen"
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -22,7 +24,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${kodeMono.variable} antialiased`}>
-      <body className="font-mono bg-white text-gray-900">{children}</body>
+      <body className="font-mono bg-white text-gray-900">
+        <SplashScreen />
+        {children}
+      </body>
     </html>
   )
 }
