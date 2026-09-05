@@ -115,7 +115,7 @@ export function Banner({
       className={cn(
         "sticky top-0 z-50 flex flex-row items-center justify-center px-4 text-center text-sm font-medium",
         variant === "normal" && "bg-secondary dark:bg-slate-800 text-secondary-foreground dark:text-white",
-        variant === "rainbow" && "bg-background text-foreground",
+        variant === "rainbow" && "bg-white dark:bg-black text-black dark:text-white",
         !open && "hidden",
         props.className,
       )}
@@ -147,29 +147,6 @@ export function Banner({
           })
         : null}
       {props.children}
-      {id ? (
-        <button
-          type="button"
-          aria-label="Close Banner"
-          onClick={() => {
-            setOpen(false);
-            if (globalKey) {
-              localStorage.setItem(globalKey, "true");
-              window.dispatchEvent(new Event("banner-status-changed"));
-            }
-          }}
-          className={cn(
-            buttonVariants({
-              variant: "ghost",
-              className:
-                "absolute cursor-pointer end-2 md:end-20 top-1/2 -translate-y-1/2 text-muted-foreground hover:bg-transparent",
-              size: "icon",
-            }),
-          )}
-        >
-          <X color={xColor} />
-        </button>
-      ) : null}
     </div>
   );
 }
