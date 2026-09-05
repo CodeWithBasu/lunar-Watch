@@ -42,13 +42,16 @@ export const StarButton = ({ text = "WISHLIST", initialCount = 1284 }: StarButto
         />
         <div
           className={cn(
-            "group flex w-fit cursor-pointer items-center gap-2 overflow-hidden rounded-full border border-yellow-400 fill-none p-2 px-3 font-extrabold text-yellow-500 transition-all active:scale-90",
+            "relative group flex w-fit cursor-pointer items-center gap-2 overflow-hidden rounded-full border border-yellow-400 fill-none p-2 px-3 font-extrabold text-yellow-500 transition-all active:scale-90",
             "peer-checked:fill-yellow-400 peer-checked:hover:text-black",
             // Pure golden glow
             "peer-checked:drop-shadow-[0_0_12px_rgba(250,204,21,0.8)]",
             "drop-shadow-[0_0_4px_rgba(250,204,21,0.4)] hover:drop-shadow-[0_0_8px_rgba(250,204,21,0.7)]"
           )}
         >
+          {/* Shine Sweep Effect */}
+          <div className="absolute top-0 bottom-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-[200%] skew-x-[-15deg] animate-shine pointer-events-none z-0" />
+          
           <div className="z-10 transition group-hover:translate-x-4 peer-checked:group-hover:text-black">
             {text}
           </div>

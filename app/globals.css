@@ -150,3 +150,16 @@
     }
   }
 }
+
+@theme inline {
+  --animate-shine: shine 4s ease-in-out infinite;
+
+  @keyframes shine {
+    0% {
+      transform: translateX(-200%) skewX(-15deg);
+    }
+    20%, 100% {
+      transform: translateX(200%) skewX(-15deg);
+    }
+  }
+}
