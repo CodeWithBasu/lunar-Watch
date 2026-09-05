@@ -2,25 +2,12 @@
 
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
-import { Moon, ChevronLeft, ChevronRight, AlertCircle, MapPin, Camera, X, Info } from "lucide-react"
+import { Moon, ChevronLeft, ChevronRight, Crosshair } from "lucide-react"
 import { HorizontalThemeWipeToggle } from "@/components/ui/theme-wipe-toggle"
 import { Meteors } from "@/components/ui/meteors"
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern"
 import { StarButton } from "@/components/ui/star-button"
-import { Banner } from "@/components/ui/banner"
-import { motion, AnimatePresence } from "framer-motion"
-
-const MOCK_SIGHTINGS = [
-  { id: 1, location: "Tokyo, Japan", time: "2 hours ago", type: "Clear View", image: "https://images.unsplash.com/photo-1517512006864-7edc3e14324c?q=80&w=300&auto=format&fit=crop" },
-  { id: 2, location: "New York, USA", time: "5 hours ago", type: "Waxing Phase", image: "https://images.unsplash.com/photo-1532694119335-71bbd067debe?q=80&w=300&auto=format&fit=crop" },
-  { id: 3, location: "London, UK", time: "8 hours ago", type: "City Lights", image: "https://images.unsplash.com/photo-1513628253939-010e64ac66cd?q=80&w=300&auto=format&fit=crop" }
-]
-
-const MOCK_ALERTS = [
-  "BREAKING: Next Supermoon expected in 14 days",
-  "SIGHTING: Perfect visibility reported across Northern Europe tonight",
-  "MISSION UPDATE: Artemis II crew lunar flyby preparations on schedule"
-]
+import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion"
 
 interface MoonPhase {
   phase: number
@@ -37,40 +24,71 @@ interface MoonEvent {
   illumination: number
 }
 
+// Tech Sound & Haptic Helper
+const playTechClick = () => {
+  if (typeof window !== 'undefined') {
+    if (navigator.vibrate) navigator.vibrate(30);
+    try {
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(1000, audioCtx.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(1500, audioCtx.currentTime + 0.05);
+      
+      gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      oscillator.start();
+      oscillator.stop(audioCtx.currentTime + 0.05);
+    } catch (e) {
+      // Ignore
+    }
+  }
+}
+
 export default function MoonTracker() {
   const [currentMoon, setCurrentMoon] = useState<MoonPhase | null>(null)
   const [upcomingEvents, setUpcomingEvents] = useState<MoonEvent[]>([])
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [direction, setDirection] = useState(0)
   const [loading, setLoading] = useState(true)
-  const [eggCount, setEggCount] = useState(0)
-  const [showEgg, setShowEgg] = useState(false)
-  const [currentAlertIndex, setCurrentAlertIndex] = useState(0)
+  const [location, setLocation] = useState<{lat: number, lng: number} | null>(null)
+  const [countdown, setCountdown] = useState<string>("CALCULATING...")
 
-  // Rotate alerts
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentAlertIndex((prev) => (prev + 1) % MOCK_ALERTS.length)
-    }, 5000)
-    return () => clearInterval(interval)
-  }, [])
+  // Holographic Tilt Values
+  const mouseX = useMotionValue(0.5);
+  const mouseY = useMotionValue(0.5);
+  const rotateX = useTransform(mouseY, [0, 1], [15, -15]);
+  const rotateY = useTransform(mouseX, [0, 1], [-15, 15]);
 
-  const handleMoonClick = () => {
-    const newCount = eggCount + 1
-    setEggCount(newCount)
-    if (newCount === 3) {
-      setShowEgg(true)
-      setEggCount(0)
-    }
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    mouseX.set(x);
+    mouseY.set(y);
   }
 
-  // Calculate moon phase for a given date
+  // Fetch Telemetry
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+        () => console.log("Location denied")
+      )
+    }
+  }, [])
+
   const calculateMoonPhase = (date: Date): MoonPhase => {
     const year = date.getFullYear()
     const month = date.getMonth() + 1
     const day = date.getDate()
 
-    // Julian day calculation
     const a = Math.floor((14 - month) / 12)
     const y = year - a
     const m = month + 12 * a - 3
@@ -83,7 +101,6 @@ export default function MoonTracker() {
       Math.floor(y / 400) +
       1721119
 
-    // Moon phase calculation (simplified)
     const daysSinceNewMoon = (jd - 2451549.5) % 29.53058867
     const phase = daysSinceNewMoon / 29.53058867
     const illumination = (1 - Math.cos(phase * 2 * Math.PI)) / 2
@@ -97,7 +114,6 @@ export default function MoonTracker() {
     }
   }
 
-  // Generate upcoming moon events
   const generateUpcomingEvents = (startDate: Date): MoonEvent[] => {
     const events: MoonEvent[] = []
     const currentDate = new Date(startDate)
@@ -139,8 +155,31 @@ export default function MoonTracker() {
       currentDate.setDate(currentDate.getDate() + 1)
     }
 
-    return events.slice(0, 6) // reduced to 6 events for cleaner layout
+    return events.slice(0, 6)
   }
+
+  // T-Minus Countdown Timer
+  useEffect(() => {
+    if (upcomingEvents.length === 0) return;
+    const nextEvent = upcomingEvents.find(e => new Date(e.date).getTime() > new Date().getTime()) || upcomingEvents[0];
+    const targetDate = new Date(nextEvent.date);
+    targetDate.setHours(0,0,0,0);
+
+    const timer = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = targetDate.getTime() - now;
+      if (distance < 0) {
+        setCountdown("T- 00:00:00");
+        return;
+      }
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      setCountdown(`T- ${days}d ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [upcomingEvents])
 
   const getMoonPhaseName = (phase: number): string => {
     if (phase < 0.03 || phase > 0.97) return "New Moon"
@@ -173,7 +212,7 @@ export default function MoonTracker() {
     }),
   }
 
-  const MoonVisual = ({ phase, illumination, onClick }: { phase: number; illumination: number; onClick?: () => void }) => {
+  const MoonVisual = ({ phase, illumination }: { phase: number, illumination: number }) => {
     const getMoonPath = (phase: number) => {
       const radius = 40
       const centerX = 50
@@ -217,10 +256,29 @@ export default function MoonTracker() {
     const glowScale = 1 + (illumination / 100) * 0.4
 
     return (
-      <div 
-        className={`relative w-32 h-32 mx-auto flex items-center justify-center ${onClick ? 'cursor-pointer hover:scale-105 transition-transform duration-300' : ''}`}
-        onClick={onClick}
+      <motion.div 
+        className="relative w-32 h-32 mx-auto flex items-center justify-center cursor-crosshair"
+        style={{ rotateX, rotateY, perspective: 1000 }}
       >
+        {/* Rotating Star Map */}
+        <motion.div 
+          className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none text-blue-500"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 150, repeat: Infinity, ease: "linear" }}
+        >
+          <svg width="250" height="250" viewBox="0 0 100 100">
+             <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" strokeWidth="0.2" strokeDasharray="2 4" />
+             <circle cx="50" cy="50" r="35" fill="none" stroke="currentColor" strokeWidth="0.1" />
+             <path d="M 50 0 L 50 100 M 0 50 L 100 50" stroke="currentColor" strokeWidth="0.1" opacity="0.5" />
+             <circle cx="15" cy="15" r="1" fill="currentColor" />
+             <circle cx="80" cy="25" r="1.5" fill="currentColor" />
+             <circle cx="25" cy="85" r="0.8" fill="currentColor" />
+             <circle cx="85" cy="75" r="1.2" fill="currentColor" />
+             <line x1="50" y1="50" x2="15" y2="15" stroke="currentColor" strokeWidth="0.1" />
+             <line x1="50" y1="50" x2="80" y2="25" stroke="currentColor" strokeWidth="0.1" />
+          </svg>
+        </motion.div>
+
         {/* Breathing glowing aura */}
         <motion.div 
           className="absolute inset-0 rounded-full bg-blue-100 dark:bg-blue-400 blur-2xl z-0"
@@ -229,8 +287,7 @@ export default function MoonTracker() {
           style={{ transform: `scale(${glowScale})` }}
         />
         
-        <svg width="100" height="100" viewBox="0 0 100 100" className="drop-shadow-xl relative z-10">
-          {/* Moon surface (dark side) */}
+        <svg width="100" height="100" viewBox="0 0 100 100" className="drop-shadow-xl relative z-10 pointer-events-none">
           <circle cx="50" cy="50" r="40" fill="#1a1a1a" stroke="#333333" strokeWidth="0.5" />
           {getMoonPath(phase) && <path d={getMoonPath(phase)} fill="#f0f0f0" stroke="#e0e0e0" strokeWidth="0.5" />}
           
@@ -244,7 +301,7 @@ export default function MoonTracker() {
           <circle cx="54" cy="52" r="0.6" fill="#ececec" opacity="0.4" />
           <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
         </svg>
-      </div>
+      </motion.div>
     )
   }
 
@@ -269,6 +326,7 @@ export default function MoonTracker() {
   }
 
   const navigateDate = (navDir: "prev" | "next") => {
+    playTechClick();
     setDirection(navDir === "next" ? 1 : -1)
     const newDate = new Date(selectedDate)
     newDate.setDate(newDate.getDate() + (navDir === "next" ? 1 : -1))
@@ -278,16 +336,11 @@ export default function MoonTracker() {
   const MoonPhaseIcon = ({ eventType }: { eventType: "new" | "first_quarter" | "full" | "last_quarter" }) => {
     const getPhaseValue = (type: typeof eventType): number => {
       switch (type) {
-        case "new":
-          return 0
-        case "first_quarter":
-          return 0.25
-        case "full":
-          return 0.5
-        case "last_quarter":
-          return 0.75
-        default:
-          return 0
+        case "new": return 0
+        case "first_quarter": return 0.25
+        case "full": return 0.5
+        case "last_quarter": return 0.75
+        default: return 0
       }
     }
 
@@ -296,9 +349,7 @@ export default function MoonTracker() {
       const centerX = 16
       const centerY = 16
 
-      if (phase < 0.01 || phase > 0.99) {
-        return ""
-      }
+      if (phase < 0.01 || phase > 0.99) return ""
 
       if (phase >= 0.49 && phase <= 0.51) {
         return `M ${centerX - radius} ${centerY} 
@@ -334,13 +385,8 @@ export default function MoonTracker() {
 
     return (
       <svg width="32" height="32" viewBox="0 0 32 32" className="drop-shadow-sm">
-        {/* Moon surface (dark side) */}
         <circle cx="16" cy="16" r="12" fill="#1a1a1a" stroke="#333333" strokeWidth="0.3" />
-
-        {/* Illuminated portion */}
         {getMoonPath(phase) && <path d={getMoonPath(phase)} fill="#f0f0f0" stroke="#e0e0e0" strokeWidth="0.3" />}
-
-        {/* Small crater details */}
         <circle cx="13" cy="12" r="0.8" fill="#e8e8e8" opacity="0.6" />
         <circle cx="19" cy="14" r="0.6" fill="#e8e8e8" opacity="0.4" />
         <circle cx="16" cy="20" r="0.5" fill="#e8e8e8" opacity="0.5" />
@@ -372,17 +418,14 @@ export default function MoonTracker() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black transition-colors duration-300 relative overflow-hidden">
-      <Banner id="live-tracker-banner" variant="rainbow" height="2.5rem" className="flex items-center gap-2">
-        <AlertCircle className="w-4 h-4 flex-shrink-0 animate-pulse" />
-        <span key={currentAlertIndex} className="font-mono text-xs sm:text-sm truncate transition-opacity duration-500">
-          {MOCK_ALERTS[currentAlertIndex]}
-        </span>
-      </Banner>
-      <div className="hidden dark:block absolute inset-0 pointer-events-none">
+    <div 
+      className="min-h-screen bg-white dark:bg-black transition-colors duration-300 relative overflow-hidden"
+      onMouseMove={handleMouseMove}
+    >
+      <div className="hidden dark:block absolute inset-0 pointer-events-none z-0">
         <Meteors number={25} />
       </div>
-      <div className="block dark:hidden absolute inset-0 pointer-events-none">
+      <div className="block dark:hidden absolute inset-0 pointer-events-none z-0">
         <AnimatedGridPattern 
           numSquares={30}
           maxOpacity={0.1}
@@ -394,27 +437,40 @@ export default function MoonTracker() {
           )} 
         />
       </div>
-      <header className="border-b border-gray-100 dark:border-gray-900 relative z-10">
+      
+      <header className="border-b border-gray-100 dark:border-gray-900 relative z-20">
         <div className="max-w-4xl mx-auto px-6 py-12 relative">
+          
+          {/* Live Telemetry Display */}
+          <div className="absolute left-6 top-6 sm:left-12 sm:top-12 flex-col hidden sm:flex pointer-events-none">
+            <div className="flex items-center gap-2 mb-1">
+              <Crosshair className="w-3 h-3 text-blue-500 animate-pulse" />
+              <span className="text-[10px] text-gray-400 dark:text-gray-500 font-mono tracking-[0.2em]">SYS.TELEMETRY</span>
+            </div>
+            <span className="text-xs text-blue-600 dark:text-blue-400 font-mono font-medium tracking-wider">
+              {location ? `LAT:${location.lat.toFixed(4)}° LON:${location.lng.toFixed(4)}°` : "AQUIRING SIGNAL..."}
+            </span>
+          </div>
+
           <div className="absolute right-6 top-6 sm:right-12 sm:top-12">
             <HorizontalThemeWipeToggle direction="left" />
           </div>
           <div className="text-center flex flex-col items-center">
             <h1 className="text-3xl font-mono text-gray-900 dark:text-gray-100 tracking-wide font-semibold">Moon Tracker</h1>
             <p className="text-gray-500 dark:text-gray-400 mt-2 font-mono text-sm">{"Lunar phase calendar, by I Putu Dana Putra."}</p>
-            <div className="mt-6">
+            <div className="mt-6 pointer-events-auto">
               <StarButton text="FAVORITE" />
             </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 py-12 space-y-16 relative z-10">
+      <main className="max-w-4xl mx-auto px-6 py-12 space-y-16 relative z-10 pointer-events-none">
         <section className="text-center space-y-8">
-          <div className="flex items-center justify-center gap-6">
+          <div className="flex items-center justify-center gap-6 pointer-events-auto">
             <button
               onClick={() => navigateDate("prev")}
-              className="p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-full transition-colors"
+              className="p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-full transition-colors active:scale-95"
             >
               <ChevronLeft className="w-5 h-5 text-gray-400 dark:text-gray-500" />
             </button>
@@ -438,7 +494,7 @@ export default function MoonTracker() {
             </AnimatePresence>
             <button
               onClick={() => navigateDate("next")}
-              className="p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-full transition-colors"
+              className="p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-full transition-colors active:scale-95"
             >
               <ChevronRight className="w-5 h-5 text-gray-400 dark:text-gray-500" />
             </button>
@@ -455,9 +511,9 @@ export default function MoonTracker() {
                   animate="center"
                   exit="exit"
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  className="w-full space-y-6 absolute"
+                  className="w-full space-y-6 absolute pointer-events-auto"
                 >
-                  <MoonVisual phase={currentMoon.phase} illumination={currentMoon.illumination} onClick={handleMoonClick} />
+                  <MoonVisual phase={currentMoon.phase} illumination={currentMoon.illumination} />
                   
                   <div>
                     <h3 className="text-2xl font-mono text-gray-900 dark:text-gray-100 mb-2 font-medium">
@@ -492,8 +548,18 @@ export default function MoonTracker() {
           </div>
         </section>
 
-        <section>
-          <h3 className="text-lg font-mono text-gray-900 dark:text-gray-100 mb-8 text-center font-semibold">Upcoming Events</h3>
+        <section className="pointer-events-auto">
+          <div className="flex flex-col items-center mb-8 gap-2">
+            <h3 className="text-lg font-mono text-gray-900 dark:text-gray-100 text-center font-semibold">Upcoming Events</h3>
+            {/* T-Minus Countdown */}
+            <div className="bg-gray-100 dark:bg-neutral-900/50 px-4 py-1.5 rounded-full border border-gray-200 dark:border-neutral-800 flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              <span className="font-mono text-xs tracking-[0.15em] text-gray-600 dark:text-gray-300 font-medium">
+                {countdown}
+              </span>
+            </div>
+          </div>
+          
           <div className="space-y-4">
             {upcomingEvents.map((event, index) => (
               <div
@@ -516,71 +582,7 @@ export default function MoonTracker() {
             ))}
           </div>
         </section>
-
-        <section>
-          <div className="flex items-center justify-center gap-2 mb-8">
-            <Camera className="w-5 h-5 text-gray-900 dark:text-gray-100" />
-            <h3 className="text-lg font-mono text-gray-900 dark:text-gray-100 text-center font-semibold">Moon Sightings</h3>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {MOCK_SIGHTINGS.map((sighting) => (
-              <div key={sighting.id} className="group relative rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all border border-gray-100 dark:border-gray-800">
-                <img 
-                  src={sighting.image} 
-                  alt={sighting.type} 
-                  className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4">
-                  <div className="flex items-center gap-1.5 text-white/90 mb-1">
-                    <MapPin className="w-3 h-3" />
-                    <span className="text-xs font-mono">{sighting.location}</span>
-                  </div>
-                  <h4 className="text-white font-mono font-medium text-sm">{sighting.type}</h4>
-                  <p className="text-white/70 text-xs font-mono">{sighting.time}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <div className="text-center pt-8 border-t border-gray-100 dark:border-gray-800">
-          <button
-            onClick={() => setSelectedDate(new Date())}
-            className="px-6 py-2 border border-gray-200 dark:border-neutral-900 hover:border-gray-300 dark:hover:border-gray-700 font-mono text-sm text-gray-700 dark:text-gray-300 transition-colors"
-          >
-            Today
-          </button>
-        </div>
       </main>
-
-      {/* Easter Egg Modal */}
-      {showEgg && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
-            <button 
-              onClick={() => setShowEgg(false)}
-              className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            >
-              <X className="w-5 h-5 text-gray-500" />
-            </button>
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-2">
-                <Info className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-              </div>
-              <h3 className="text-xl font-mono font-bold text-gray-900 dark:text-white">You found a secret!</h3>
-              <p className="text-gray-600 dark:text-gray-300 font-mono text-sm leading-relaxed">
-                Did you know? The footprint left by Apollo 11 astronauts on the Moon will likely stay there for millions of years because there is no wind or water to erode it!
-              </p>
-              <button 
-                onClick={() => setShowEgg(false)}
-                className="w-full py-2.5 mt-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-mono text-sm rounded-lg hover:opacity-90 transition-opacity"
-              >
-                Awesome
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
