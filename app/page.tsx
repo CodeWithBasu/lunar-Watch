@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Moon, ChevronLeft, ChevronRight } from "lucide-react"
 import { HorizontalThemeWipeToggle } from "@/components/ui/theme-wipe-toggle"
+import { Meteors } from "@/components/ui/meteors"
 
 interface MoonPhase {
   phase: number
@@ -312,8 +313,11 @@ export default function MoonTracker() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black transition-colors duration-300">
-      <header className="border-b border-gray-100 dark:border-gray-900">
+    <div className="min-h-screen bg-white dark:bg-black transition-colors duration-300 relative overflow-hidden">
+      <div className="hidden dark:block absolute inset-0 pointer-events-none">
+        <Meteors number={25} />
+      </div>
+      <header className="border-b border-gray-100 dark:border-gray-900 relative z-10">
         <div className="max-w-4xl mx-auto px-6 py-12 relative">
           <div className="absolute right-6 top-6 sm:right-12 sm:top-12">
             <HorizontalThemeWipeToggle direction="left" />
@@ -325,7 +329,7 @@ export default function MoonTracker() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 py-12 space-y-16">
+      <main className="max-w-4xl mx-auto px-6 py-12 space-y-16 relative z-10">
         <section className="text-center space-y-8">
           <div className="flex items-center justify-center gap-6">
             <button
