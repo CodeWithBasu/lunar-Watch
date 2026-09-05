@@ -442,12 +442,12 @@ export default function MoonTracker() {
         <div className="max-w-4xl mx-auto px-6 py-12 relative">
           
           {/* Live Telemetry Display */}
-          <div className="absolute left-6 top-6 sm:left-12 sm:top-12 flex-col hidden sm:flex pointer-events-none">
+          <div className="absolute left-6 top-6 flex flex-col pointer-events-none z-50">
             <div className="flex items-center gap-2 mb-1">
               <Crosshair className="w-3 h-3 text-blue-500 animate-pulse" />
               <span className="text-[10px] text-gray-400 dark:text-gray-500 font-mono tracking-[0.2em]">SYS.TELEMETRY</span>
             </div>
-            <span className="text-xs text-blue-600 dark:text-blue-400 font-mono font-medium tracking-wider">
+            <span className="text-[10px] sm:text-xs text-blue-600 dark:text-blue-400 font-mono font-medium tracking-wider">
               {location ? `LAT:${location.lat.toFixed(4)}° LON:${location.lng.toFixed(4)}°` : "AQUIRING SIGNAL..."}
             </span>
           </div>
