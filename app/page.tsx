@@ -7,6 +7,7 @@ import { HorizontalThemeWipeToggle } from "@/components/ui/theme-wipe-toggle"
 import { Meteors } from "@/components/ui/meteors"
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern"
 import { StarButton } from "@/components/ui/star-button"
+import { Banner } from "@/components/ui/banner"
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion"
 
 interface MoonPhase {
@@ -422,6 +423,12 @@ export default function MoonTracker() {
       className="min-h-screen bg-white dark:bg-black transition-colors duration-300 relative overflow-hidden"
       onMouseMove={handleMouseMove}
     >
+      <Banner id="live-tracker-banner" variant="rainbow" height="2.5rem" className="flex items-center gap-2">
+        <span className="font-mono text-xs sm:text-sm font-bold truncate">
+          BREAKING: Next Supermoon expected in 14 days
+        </span>
+      </Banner>
+      
       <div className="hidden dark:block absolute inset-0 pointer-events-none z-0">
         <Meteors number={25} />
       </div>
