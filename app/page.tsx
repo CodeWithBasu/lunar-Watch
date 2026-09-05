@@ -7,6 +7,7 @@ import { HorizontalThemeWipeToggle } from "@/components/ui/theme-wipe-toggle"
 import { Meteors } from "@/components/ui/meteors"
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern"
 import { StarButton } from "@/components/ui/star-button"
+import { Banner } from "@/components/ui/banner"
 import { motion, AnimatePresence } from "framer-motion"
 
 const MOCK_SIGHTINGS = [
@@ -372,6 +373,12 @@ export default function MoonTracker() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-black transition-colors duration-300 relative overflow-hidden">
+      <Banner id="live-tracker-banner" variant="rainbow" height="2.5rem" className="flex items-center gap-2">
+        <AlertCircle className="w-4 h-4 flex-shrink-0 animate-pulse" />
+        <span key={currentAlertIndex} className="font-mono text-xs sm:text-sm truncate transition-opacity duration-500">
+          {MOCK_ALERTS[currentAlertIndex]}
+        </span>
+      </Banner>
       <div className="hidden dark:block absolute inset-0 pointer-events-none">
         <Meteors number={25} />
       </div>
@@ -401,16 +408,6 @@ export default function MoonTracker() {
           </div>
         </div>
       </header>
-
-      {/* Spidey-Tracker Inspired Alerts Banner */}
-      <div className="bg-blue-600 dark:bg-blue-900 text-white overflow-hidden relative z-10">
-        <div className="max-w-4xl mx-auto px-6 py-2 flex items-center gap-3">
-          <AlertCircle className="w-4 h-4 flex-shrink-0 animate-pulse" />
-          <p key={currentAlertIndex} className="font-mono text-xs sm:text-sm truncate transition-opacity duration-500">
-            {MOCK_ALERTS[currentAlertIndex]}
-          </p>
-        </div>
-      </div>
 
       <main className="max-w-4xl mx-auto px-6 py-12 space-y-16 relative z-10">
         <section className="text-center space-y-8">
