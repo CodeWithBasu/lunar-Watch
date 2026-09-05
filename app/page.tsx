@@ -71,13 +71,47 @@ export default function MoonTracker() {
   const [location, setLocation] = useState<{lat: number, lng: number} | null>(null)
   const [countdown, setCountdown] = useState<string>("CALCULATING...")
   const [currentAlertIndex, setCurrentAlertIndex] = useState(0)
+  const [dynamicAlerts, setDynamicAlerts] = useState<string[]>(MOCK_ALERTS)
 
+  // Generate dynamic alerts based on date and moon phase
+  useEffect(() => {
+    if (!currentMoon) return;
+
+    const baseAlerts = [
+      "FACT: The Moon is drifting away from Earth at a rate of 3.8 cm per year",
+      "FACT: The Moon has moonquakes caused by Earth's gravitational pull",
+      "FACT: Water ice exists in permanently shadowed craters at the lunar poles",
+      "MISSION UPDATE: Artemis II crew lunar flyby preparations on schedule",
+    ];
+
+    const phaseAlerts = [];
+    if (currentMoon.phase >= 0.47 && currentMoon.phase <= 0.53) {
+      phaseAlerts.push("BREAKING: Full Moon tonight! Experience peak lunar illumination.");
+    } else if (currentMoon.phase < 0.03 || currentMoon.phase > 0.97) {
+      phaseAlerts.push("SIGHTING: New Moon phase - perfect dark skies for deep space stargazing!");
+    } else if (currentMoon.phase > 0.20 && currentMoon.phase < 0.30) {
+      phaseAlerts.push("SIGHTING: High-contrast terminator visible tonight - great for telescope viewing!");
+    }
+
+    if (upcomingEvents.length > 0) {
+      const nextEvent = upcomingEvents[0];
+      const daysUntil = Math.ceil((new Date(nextEvent.date).getTime() - selectedDate.getTime()) / (1000 * 60 * 60 * 24));
+      if (daysUntil > 0 && daysUntil <= 14) {
+        phaseAlerts.push(`ALERT: Next ${nextEvent.name} expected in ${daysUntil} days.`);
+      }
+    }
+
+    setDynamicAlerts([...phaseAlerts, ...baseAlerts]);
+    setCurrentAlertIndex(0);
+  }, [currentMoon, upcomingEvents, selectedDate]);
+
+  // Rotate alerts
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentAlertIndex((prev) => (prev + 1) % MOCK_ALERTS.length)
+      setCurrentAlertIndex((prev) => (prev + 1) % dynamicAlerts.length)
     }, 5000)
     return () => clearInterval(timer)
-  }, [])
+  }, [dynamicAlerts.length])
 
   // Holographic Tilt Values
   const mouseX = useMotionValue(0.5);
@@ -444,7 +478,7 @@ export default function MoonTracker() {
       <Banner id="live-tracker-banner" variant="rainbow" height="2.5rem" className="flex items-center gap-2">
         <AlertCircle className="w-4 h-4 flex-shrink-0 animate-pulse" />
         <span key={currentAlertIndex} className="font-mono text-xs sm:text-sm font-bold truncate transition-opacity duration-500">
-          {MOCK_ALERTS[currentAlertIndex]}
+          {dynamicAlerts[currentAlertIndex] || ""}
         </span>
       </Banner>
       
