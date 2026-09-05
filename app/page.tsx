@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
-import { Moon, ChevronLeft, ChevronRight, Crosshair } from "lucide-react"
+import { Moon, ChevronLeft, ChevronRight, Crosshair, AlertCircle } from "lucide-react"
 import { HorizontalThemeWipeToggle } from "@/components/ui/theme-wipe-toggle"
 import { Meteors } from "@/components/ui/meteors"
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern"
@@ -24,6 +24,16 @@ interface MoonEvent {
   name: string
   illumination: number
 }
+
+const MOCK_ALERTS = [
+  "BREAKING: Next Supermoon expected in 14 days",
+  "MISSION UPDATE: Artemis II crew lunar flyby preparations on schedule",
+  "SIGHTING: High-contrast terminator visible tonight along Mare Crisium",
+  "FACT: The Moon is drifting away from Earth at a rate of 3.8 cm per year",
+  "FACT: The Moon has moonquakes caused by Earth's gravitational pull",
+  "FACT: Water ice exists in permanently shadowed craters at the lunar poles",
+  "UPDATE: Total Lunar Eclipse approaching in the next quarter",
+]
 
 // Tech Sound & Haptic Helper
 const playTechClick = () => {
@@ -60,6 +70,14 @@ export default function MoonTracker() {
   const [loading, setLoading] = useState(true)
   const [location, setLocation] = useState<{lat: number, lng: number} | null>(null)
   const [countdown, setCountdown] = useState<string>("CALCULATING...")
+  const [currentAlertIndex, setCurrentAlertIndex] = useState(0)
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentAlertIndex((prev) => (prev + 1) % MOCK_ALERTS.length)
+    }, 5000)
+    return () => clearInterval(timer)
+  }, [])
 
   // Holographic Tilt Values
   const mouseX = useMotionValue(0.5);
@@ -424,8 +442,9 @@ export default function MoonTracker() {
       onMouseMove={handleMouseMove}
     >
       <Banner id="live-tracker-banner" variant="rainbow" height="2.5rem" className="flex items-center gap-2">
-        <span className="font-mono text-xs sm:text-sm font-bold truncate">
-          BREAKING: Next Supermoon expected in 14 days
+        <AlertCircle className="w-4 h-4 flex-shrink-0 animate-pulse" />
+        <span key={currentAlertIndex} className="font-mono text-xs sm:text-sm font-bold truncate transition-opacity duration-500">
+          {MOCK_ALERTS[currentAlertIndex]}
         </span>
       </Banner>
       
