@@ -116,3 +116,19 @@
 .clean-transition {
   transition: all 0.15s ease;
 }
+
+::selection {
+  background-color: #333;
+  color: white;
+}
+
+.dark ::selection {
+  background-color: #e5e7eb;
+  color: black;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
