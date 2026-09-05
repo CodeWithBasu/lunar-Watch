@@ -91,7 +91,8 @@ export const HorizontalThemeWipeToggle = ({
       onClick={onToggle}
       aria-label="Switch theme"
       className={cn(
-        "flex items-center justify-center p-2 rounded-full outline-none focus:outline-none active:outline-none focus:ring-0 cursor-pointer",
+        "flex items-center justify-center w-10 h-10 rounded-full outline-none focus:outline-none active:outline-none focus:ring-0 cursor-pointer transition-colors z-50",
+        "bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 shadow-sm",
         className,
       )}
       type="button"
