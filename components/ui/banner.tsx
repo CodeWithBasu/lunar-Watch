@@ -63,9 +63,7 @@ type BannerVariant = "rainbow" | "normal";
 
 export function Banner({
   id,
-  xColor,
   variant = "normal",
-  changeLayout = true,
   height = "3rem",
   rainbowColors = [
     "rgba(0,149,255,0.56)",
@@ -76,13 +74,9 @@ export function Banner({
   ...props
 }: HTMLAttributes<HTMLDivElement> & {
   height?: string;
-  xColor?: string;
   variant?: BannerVariant;
   rainbowColors?: string[];
-  changeLayout?: boolean;
 }) {
-  const globalKey = id ? `nd-banner-${id}` : null;
-
   return (
     <div
       id={id}
@@ -97,24 +91,6 @@ export function Banner({
         height,
       }}
     >
-      {changeLayout ? (
-        <style>
-          {globalKey
-            ? `:root:not(.${globalKey}) { --fd-banner-height: ${height}; }`
-            : `:root { --fd-banner-height: ${height}; }`}
-        </style>
-      ) : null}
-      {globalKey ? (
-        <style>{`.${globalKey} #${id} { display: none; }`}</style>
-      ) : null}
-      {globalKey ? (
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `if (localStorage.getItem('${globalKey}') === 'true') document.documentElement.classList.add('${globalKey}');`,
-          }}
-        />
-      ) : null}
-
       {variant === "rainbow"
         ? flow({
             colors: rainbowColors,
