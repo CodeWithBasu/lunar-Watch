@@ -366,14 +366,14 @@ export default function MoonTracker() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 py-12 space-y-12 relative z-10">
-        <section className="text-center space-y-8 bg-white/40 dark:bg-black/40 backdrop-blur-xl border border-black/5 dark:border-white/10 rounded-3xl p-8 shadow-2xl">
+      <main className="max-w-4xl mx-auto px-6 py-12 space-y-16 relative z-10">
+        <section className="text-center space-y-8">
           <div className="flex items-center justify-center gap-6">
             <button
               onClick={() => navigateDate("prev")}
-              className="p-3 bg-white/50 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/10 rounded-full transition-all border border-black/5 dark:border-white/5 hover:scale-110"
+              className="p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-full transition-colors"
             >
-              <ChevronLeft className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+              <ChevronLeft className="w-5 h-5 text-gray-400 dark:text-gray-500" />
             </button>
             <AnimatePresence mode="popLayout" custom={direction}>
               <motion.h2 
@@ -384,7 +384,7 @@ export default function MoonTracker() {
                 animate="center"
                 exit="exit"
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="text-2xl font-mono font-medium text-gray-900 dark:text-gray-100 min-w-[200px]"
+                className="text-xl font-mono font-light text-gray-900 dark:text-gray-100 min-w-[200px]"
               >
                 {selectedDate.toLocaleDateString("en-US", {
                   month: "long",
@@ -395,13 +395,13 @@ export default function MoonTracker() {
             </AnimatePresence>
             <button
               onClick={() => navigateDate("next")}
-              className="p-3 bg-white/50 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/10 rounded-full transition-all border border-black/5 dark:border-white/5 hover:scale-110"
+              className="p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-full transition-colors"
             >
-              <ChevronRight className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+              <ChevronRight className="w-5 h-5 text-gray-400 dark:text-gray-500" />
             </button>
           </div>
 
-          <div className="relative min-h-[250px] flex items-center justify-center">
+          <div className="relative min-h-[350px] flex items-center justify-center">
             <AnimatePresence mode="popLayout" custom={direction}>
               {currentMoon && (
                 <motion.div
@@ -412,33 +412,33 @@ export default function MoonTracker() {
                   animate="center"
                   exit="exit"
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  className="w-full space-y-8 absolute"
+                  className="w-full space-y-6 absolute"
                 >
                   <MoonVisual phase={currentMoon.phase} illumination={currentMoon.illumination} />
                   
                   <div>
-                    <h3 className="text-3xl font-mono text-gray-900 dark:text-gray-100 mb-2 font-bold tracking-tight">
+                    <h3 className="text-2xl font-mono text-gray-900 dark:text-gray-100 mb-2 font-medium">
                       {getMoonPhaseName(currentMoon.phase)}
                     </h3>
-                    <p className="text-blue-600 dark:text-blue-400 font-mono text-sm font-semibold tracking-widest uppercase">
+                    <p className="text-gray-500 dark:text-gray-400 font-mono text-sm">
                       {currentMoon.illumination.toFixed(0)}% illuminated
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-4 max-w-md mx-auto pt-8 border-t border-black/5 dark:border-white/10">
-                    <div className="text-center p-3 rounded-2xl bg-white/30 dark:bg-white/5 border border-black/5 dark:border-white/5">
-                      <p className="text-gray-500 dark:text-gray-400 font-mono text-xs uppercase tracking-widest mb-2">Age</p>
-                      <p className="text-gray-900 dark:text-gray-100 font-mono text-lg font-bold">{currentMoon.age.toFixed(0)}d</p>
+                  <div className="grid grid-cols-3 gap-8 max-w-md mx-auto pt-8 border-t border-gray-100 dark:border-neutral-900">
+                    <div className="text-center">
+                      <p className="text-gray-400 dark:text-gray-500 font-mono text-xs uppercase tracking-wide mb-1">Age</p>
+                      <p className="text-gray-900 dark:text-gray-100 font-mono text-sm">{currentMoon.age.toFixed(0)}d</p>
                     </div>
-                    <div className="text-center p-3 rounded-2xl bg-white/30 dark:bg-white/5 border border-black/5 dark:border-white/5">
-                      <p className="text-gray-500 dark:text-gray-400 font-mono text-xs uppercase tracking-widest mb-2">Distance</p>
-                      <p className="text-gray-900 dark:text-gray-100 font-mono text-lg font-bold">
-                        {Math.round(currentMoon.distance / 1000)}k <span className="text-sm font-normal">km</span>
+                    <div className="text-center">
+                      <p className="text-gray-400 dark:text-gray-500 font-mono text-xs uppercase tracking-wide mb-1">Distance</p>
+                      <p className="text-gray-900 dark:text-gray-100 font-mono text-sm">
+                        {Math.round(currentMoon.distance / 1000)}k km
                       </p>
                     </div>
-                    <div className="text-center p-3 rounded-2xl bg-white/30 dark:bg-white/5 border border-black/5 dark:border-white/5">
-                      <p className="text-gray-500 dark:text-gray-400 font-mono text-xs uppercase tracking-widest mb-2">Phase</p>
-                      <p className="text-gray-900 dark:text-gray-100 font-mono text-lg font-bold">
+                    <div className="text-center">
+                      <p className="text-gray-400 dark:text-gray-500 font-mono text-xs uppercase tracking-wide mb-1">Phase</p>
+                      <p className="text-gray-900 dark:text-gray-100 font-mono text-sm">
                         {(currentMoon.phase * 100).toFixed(0)}%
                       </p>
                     </div>
@@ -449,25 +449,25 @@ export default function MoonTracker() {
           </div>
         </section>
 
-        <section className="bg-white/40 dark:bg-black/40 backdrop-blur-xl border border-black/5 dark:border-white/10 rounded-3xl p-8 shadow-2xl">
-          <h3 className="text-xl font-mono text-gray-900 dark:text-gray-100 mb-6 text-center font-bold tracking-widest uppercase">Upcoming Events</h3>
-          <div className="space-y-3">
+        <section>
+          <h3 className="text-lg font-mono text-gray-900 dark:text-gray-100 mb-8 text-center font-semibold">Upcoming Events</h3>
+          <div className="space-y-4">
             {upcomingEvents.map((event, index) => (
               <div
                 key={index}
-                className="group flex items-center justify-between p-4 rounded-2xl bg-white/20 dark:bg-white/5 border border-black/5 dark:border-white/5 hover:bg-white/50 dark:hover:bg-white/10 hover:scale-[1.02] hover:shadow-lg transition-all cursor-pointer"
+                className="flex items-center justify-between py-4 border-b border-gray-50 dark:border-neutral-900/50 last:border-b-0"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-blue-100/50 dark:bg-blue-900/30 flex items-center justify-center group-hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all">
+                  <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-neutral-900 flex items-center justify-center">
                     <MoonPhaseIcon eventType={event.type} />
                   </div>
                   <div>
-                    <p className="font-mono text-gray-900 dark:text-gray-100 text-sm font-bold tracking-wide group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{event.name}</p>
-                    <p className="font-mono text-gray-500 dark:text-gray-400 text-xs mt-1">{formatDate(event.date)}</p>
+                    <p className="font-mono text-gray-900 dark:text-gray-200 text-sm font-medium">{event.name}</p>
+                    <p className="font-mono text-gray-500 dark:text-gray-400 text-xs">{formatDate(event.date)}</p>
                   </div>
                 </div>
-                <div className="text-right bg-black/5 dark:bg-white/10 px-3 py-1.5 rounded-full group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-colors">
-                  <p className="font-mono text-gray-700 dark:text-gray-300 group-hover:text-blue-700 dark:group-hover:text-blue-300 text-xs font-bold">{getDaysUntil(event.date)}</p>
+                <div className="text-right">
+                  <p className="font-mono text-gray-600 dark:text-gray-400 text-xs">{getDaysUntil(event.date)}</p>
                 </div>
               </div>
             ))}
