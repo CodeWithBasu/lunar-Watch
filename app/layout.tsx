@@ -17,6 +17,8 @@ export const metadata: Metadata = {
 
 import { SplashScreen } from "@/components/ui/splash-screen"
 
+import { Toaster } from "sonner"
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -27,6 +29,7 @@ export default function RootLayout({
       <body className="font-mono bg-white text-gray-900">
         <SplashScreen />
         {children}
+        <Toaster theme="system" position="bottom-center" />
       </body>
     </html>
   )
