@@ -517,7 +517,7 @@ export default function MoonTracker() {
           </div>
           <div className="text-center flex flex-col items-center">
             <h1 className="text-3xl font-mono text-gray-900 dark:text-gray-100 tracking-wide font-semibold">Moon Tracker</h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-2 font-mono text-sm">{"Lunar phase calendar, by I Putu Dana Putra."}</p>
+            <p className="text-gray-500 dark:text-gray-400 mt-2 font-mono text-sm">{"Lunar phase calendar, by BASUDEV."}</p>
             <div className="mt-6 pointer-events-auto">
               <StarButton text="FAVORITE" />
             </div>
