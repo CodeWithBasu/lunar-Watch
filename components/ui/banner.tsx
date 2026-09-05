@@ -1,5 +1,5 @@
 "use client";
-import { type HTMLAttributes, useEffect, useState } from "react";
+import { type HTMLAttributes } from "react";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import * as React from "react"
@@ -75,38 +75,13 @@ export function Banner({
   ],
   ...props
 }: HTMLAttributes<HTMLDivElement> & {
-  /**
-   * @defaultValue 3rem
-   */
   height?: string;
-
   xColor?: string;
-
-  /**
-   * @defaultValue 'normal'
-   */
   variant?: BannerVariant;
-
-  /**
-   * For rainbow variant only, customise the colors
-   */
   rainbowColors?: string[];
-
-  /**
-   * Change Fumadocs layout styles
-   *
-   * @defaultValue true
-   */
   changeLayout?: boolean;
 }) {
-  const [open, setOpen] = useState(true);
   const globalKey = id ? `nd-banner-${id}` : null;
-
-  useEffect(() => {
-    if (globalKey) setOpen(localStorage.getItem(globalKey) !== "true");
-  }, [globalKey]);
-
-  if (!open) return null;
 
   return (
     <div
@@ -116,14 +91,13 @@ export function Banner({
         "sticky top-0 z-50 flex flex-row items-center justify-center px-4 text-center text-sm font-medium",
         variant === "normal" && "bg-secondary dark:bg-slate-800 text-secondary-foreground dark:text-white",
         variant === "rainbow" && "bg-white dark:bg-black text-black dark:text-white",
-        !open && "hidden",
         props.className,
       )}
       style={{
         height,
       }}
     >
-      {changeLayout && open ? (
+      {changeLayout ? (
         <style>
           {globalKey
             ? `:root:not(.${globalKey}) { --fd-banner-height: ${height}; }`
