@@ -582,6 +582,22 @@ export default function MoonTracker() {
             ))}
           </div>
         </section>
+
+        <div className="text-center pt-8 pointer-events-auto">
+          <button
+            onClick={() => {
+              playTechClick()
+              setSelectedDate(new Date())
+            }}
+            className="group relative px-8 py-3 rounded-full overflow-hidden border border-blue-500/30 bg-blue-500/5 hover:bg-blue-500/10 transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] active:scale-95"
+          >
+            <div className="absolute inset-0 w-[200%] translate-x-[-100%] animate-shine bg-gradient-to-r from-transparent via-blue-400/20 to-transparent pointer-events-none" />
+            <div className="flex items-center gap-2 relative z-10">
+              <Crosshair className="w-4 h-4 text-blue-500 group-hover:rotate-90 transition-transform duration-500" />
+              <span className="font-mono text-sm font-bold text-blue-600 dark:text-blue-400 tracking-widest uppercase">Sync to Today</span>
+            </div>
+          </button>
+        </div>
       </main>
     </div>
   )
