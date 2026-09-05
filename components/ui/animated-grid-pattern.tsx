@@ -43,7 +43,8 @@ export function AnimatedGridPattern({
   repeatDelay = 0.5,
   ...props
 }: AnimatedGridPatternProps) {
-  const id = useId()
+  const rawId = useId()
+  const id = `grid-${rawId.replace(/:/g, "")}`
   const containerRef = useRef<SVGSVGElement | null>(null)
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
   const [squares, setSquares] = useState<Array<Square>>([])
@@ -86,10 +87,10 @@ export function AnimatedGridPattern({
   )
 
   useEffect(() => {
-    if (dimensions.width && dimensions.height) {
+    if (dimensions.width && dimensions.height && squares.length === 0) {
       setSquares(generateSquares(numSquares))
     }
-  }, [dimensions.width, dimensions.height, generateSquares, numSquares])
+  }, [dimensions.width, dimensions.height, generateSquares, numSquares, squares.length])
 
   useEffect(() => {
     const element = containerRef.current
@@ -97,19 +98,21 @@ export function AnimatedGridPattern({
 
     if (element) {
       resizeObserver = new ResizeObserver((entries) => {
-        for (const entry of entries) {
-          setDimensions((currentDimensions) => {
-            const nextWidth = entry.contentRect.width
-            const nextHeight = entry.contentRect.height
-            if (
-              currentDimensions.width === nextWidth &&
-              currentDimensions.height === nextHeight
-            ) {
-              return currentDimensions
-            }
-            return { width: nextWidth, height: nextHeight }
-          })
-        }
+        window.requestAnimationFrame(() => {
+          for (const entry of entries) {
+            setDimensions((currentDimensions) => {
+              const nextWidth = entry.contentRect.width
+              const nextHeight = entry.contentRect.height
+              if (
+                currentDimensions.width === nextWidth &&
+                currentDimensions.height === nextHeight
+              ) {
+                return currentDimensions
+              }
+              return { width: nextWidth, height: nextHeight }
+            })
+          }
+        })
       })
 
       resizeObserver.observe(element)
