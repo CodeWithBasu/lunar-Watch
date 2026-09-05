@@ -6,6 +6,7 @@ import { Moon, ChevronLeft, ChevronRight } from "lucide-react"
 import { HorizontalThemeWipeToggle } from "@/components/ui/theme-wipe-toggle"
 import { Meteors } from "@/components/ui/meteors"
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern"
+import { StarButton } from "@/components/ui/star-button"
 
 interface MoonPhase {
   phase: number
@@ -336,9 +337,12 @@ export default function MoonTracker() {
           <div className="absolute right-6 top-6 sm:right-12 sm:top-12">
             <HorizontalThemeWipeToggle direction="left" />
           </div>
-          <div className="text-center">
+          <div className="text-center flex flex-col items-center">
             <h1 className="text-3xl font-mono text-gray-900 dark:text-gray-100 tracking-wide font-semibold">Moon Tracker</h1>
             <p className="text-gray-500 dark:text-gray-400 mt-2 font-mono text-sm">{"Lunar phase calendar, by I Putu Dana Putra."}</p>
+            <div className="mt-6">
+              <StarButton text="FAVORITE" />
+            </div>
           </div>
         </div>
       </header>
