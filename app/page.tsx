@@ -1,10 +1,11 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { cn } from "@/lib/utils"
 import { Moon, ChevronLeft, ChevronRight } from "lucide-react"
 import { HorizontalThemeWipeToggle } from "@/components/ui/theme-wipe-toggle"
 import { Meteors } from "@/components/ui/meteors"
-import { AnimatedClouds } from "@/components/ui/animated-clouds"
+import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern"
 
 interface MoonPhase {
   phase: number
@@ -319,7 +320,16 @@ export default function MoonTracker() {
         <Meteors number={25} />
       </div>
       <div className="block dark:hidden absolute inset-0 pointer-events-none">
-        <AnimatedClouds />
+        <AnimatedGridPattern 
+          numSquares={30}
+          maxOpacity={0.1}
+          duration={3}
+          repeatDelay={1}
+          className={cn(
+            "[mask-image:radial-gradient(500px_circle_at_center,white,transparent)]",
+            "inset-x-0 inset-y-[-30%] h-[200%] skew-y-12"
+          )} 
+        />
       </div>
       <header className="border-b border-gray-100 dark:border-gray-900 relative z-10">
         <div className="max-w-4xl mx-auto px-6 py-12 relative">
