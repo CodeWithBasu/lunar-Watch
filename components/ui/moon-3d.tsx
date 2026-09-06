@@ -14,8 +14,8 @@ const MoonSphere = ({ phase }: { phase: number }) => {
   
   // Load standard three.js examples textures (reliable CDNs)
   const [colorMap, bumpMap] = useTexture([
-    "https://upload.wikimedia.org/wikipedia/commons/e/e1/FullMoon2010.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/e/e1/FullMoon2010.jpg" // Using color as bump since standard bump isn't directly available, it still gives depth
+    "/moon-reference.png",
+    "/moon-reference.png" // Using color as bump since standard bump isn't directly available, it still gives depth
   ]);
 
   // Rotate slowly over time
