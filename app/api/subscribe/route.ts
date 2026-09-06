@@ -1,4 +1,7 @@
 import { NextResponse } from "next/server"
+import { Resend } from "resend"
+
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 export async function POST(req: Request) {
   try {
@@ -9,19 +12,32 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Contact information is required" }, { status: 400 })
     }
 
-    // In a real app, this would save to Supabase and trigger a Twilio/Resend workflow
-    // For now, we simulate a successful database insertion
-    console.log(`[Mock DB] New subscription added: ${contact} for ${type} alerts`)
+    if (type === "email") {
+      if (!resend) {
+        console.log(`[MOCK EMAIL] To: ${contact} - Keys not configured`)
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        return NextResponse.json({ success: true, message: `Mock email sent to ${contact}` })
+      }
+      
+      const { data, error } = await resend.emails.send({
+        from: "Moon Tracker <onboarding@resend.dev>",
+        to: [contact],
+        subject: "Welcome to Moon Tracker Alerts by BASUDEV! 🌕",
+        html: "<p>Hello! You have successfully subscribed to <strong>Lunar Alerts by BASUDEV</strong>!</p><p>We will notify you about upcoming Supermoons, Eclipses, and special stargazing conditions.</p>",
+      });
 
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 1500))
+      if (error) {
+        return NextResponse.json({ error }, { status: 400 })
+      }
+    } 
 
     return NextResponse.json({ 
       success: true, 
       message: `Successfully subscribed ${contact} to lunar alerts!` 
     })
-  } catch (error) {
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
+  } catch (error: any) {
+    console.error("Subscription Error:", error)
+    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 })
   }
 }
 

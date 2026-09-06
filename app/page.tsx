@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
-import { Moon, ChevronLeft, ChevronRight, Crosshair, AlertCircle } from "lucide-react"
+import { Moon, ChevronLeft, ChevronRight, Crosshair, AlertCircle, Github } from "lucide-react"
 import { HorizontalThemeWipeToggle } from "@/components/ui/theme-wipe-toggle"
 import { Meteors } from "@/components/ui/meteors"
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern"
@@ -12,6 +12,7 @@ import { NasaFeed } from "@/components/ui/nasa-feed"
 import { ARViewer } from "@/components/ui/ar-viewer"
 import { MoonGallery } from "@/components/ui/moon-gallery"
 import { SubscribeAlerts } from "@/components/ui/subscribe-alerts"
+import { useMediaQuery } from "@/hooks/use-media-query"
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion"
 
 const MoonVisual = ({ phase, illumination }: { phase: number, illumination: number }) => {
@@ -139,6 +140,13 @@ export default function MoonTracker() {
   const [countdown, setCountdown] = useState<string>("CALCULATING...")
   const [currentAlertIndex, setCurrentAlertIndex] = useState(0)
   const [dynamicAlerts, setDynamicAlerts] = useState<string[]>(MOCK_ALERTS); const [arMode, setArMode] = useState(false);
+  const [mounted, setMounted] = useState(false)
+  
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+  
+  const isMobile = useMediaQuery("(max-width: 768px)")
 
   // Generate dynamic alerts based on date and moon phase
   useEffect(() => {
@@ -543,9 +551,9 @@ export default function MoonTracker() {
         className="min-h-screen bg-white dark:bg-black transition-colors duration-300 relative overflow-hidden"
         onMouseMove={handleMouseMove}
       >
-        <Banner id="live-tracker-banner" variant="rainbow" height="2.5rem" className="flex items-center gap-2">
-        <AlertCircle className="w-4 h-4 flex-shrink-0 animate-pulse" />
-        <span key={currentAlertIndex} className="font-mono text-xs sm:text-sm font-bold truncate transition-opacity duration-500">
+        <Banner id="live-tracker-banner" variant="rainbow" height="auto" className="flex items-center justify-center gap-3 py-4 px-4 min-h-[3rem]">
+        <AlertCircle className="w-4 h-4 flex-shrink-0 animate-pulse mt-0.5 self-start sm:self-center" />
+        <span key={currentAlertIndex} className="font-mono text-xs sm:text-sm font-bold transition-opacity duration-500 text-left sm:text-center leading-relaxed">
           {dynamicAlerts[currentAlertIndex] || ""}
         </span>
       </Banner>
@@ -580,14 +588,19 @@ export default function MoonTracker() {
             </span>
           </div>
 
-          <div className="absolute right-6 top-6 sm:right-12 sm:top-12">
-            <HorizontalThemeWipeToggle direction="left" />
-          </div>
+          {mounted && (
+            <div className="absolute right-6 top-6 sm:right-12 sm:top-12">
+              <HorizontalThemeWipeToggle direction="left" />
+            </div>
+          )}
+
           <div className="text-center flex flex-col items-center">
-            <h1 className="text-3xl font-mono text-gray-900 dark:text-gray-100 tracking-wide font-semibold">Moon Tracker</h1>
+            <h1 className="text-3xl font-mono text-gray-900 dark:text-gray-100 tracking-wide font-semibold mt-12 sm:mt-0">Moon Tracker</h1>
             <p className="text-gray-500 dark:text-gray-400 mt-2 font-mono text-sm">{"Lunar phase calendar, by BASUDEV."}</p>
-            <div className="mt-6 pointer-events-auto flex flex-col items-center gap-3">
+            
+            <div className="mt-6 pointer-events-auto flex flex-col sm:flex-row items-center justify-center gap-4">
               <StarButton text="FAVORITE" />
+              
               <button 
                 onClick={() => setArMode(true)} 
                 className="w-[200px] flex items-center justify-center gap-2 px-6 py-2 rounded-full border border-blue-500/30 bg-blue-500/5 hover:bg-blue-500/10 transition-all active:scale-95 font-mono text-xs font-bold text-blue-600 dark:text-blue-400 tracking-widest"
@@ -745,6 +758,30 @@ export default function MoonTracker() {
             </div>
           </button>
         </div>
+
+        <footer className="pointer-events-auto border-t border-gray-100 dark:border-neutral-900 pt-8 pb-4 flex flex-col items-center justify-center gap-6">
+          <a
+            href="https://github.com/CodeWithBasu/lunar-Watch"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-neutral-900 transition-colors"
+          >
+            <Github className="w-5 h-5 text-gray-700 dark:text-gray-300 group-hover:text-black dark:group-hover:text-white transition-colors" />
+            <span className="font-mono text-sm font-semibold text-gray-600 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white transition-colors">
+              Source Code
+            </span>
+          </a>
+          
+          <div className="flex items-center gap-2 font-mono text-xs text-gray-500 dark:text-gray-400">
+            <span>&copy; {new Date().getFullYear()}</span>
+            <span className="inline-block relative overflow-hidden group">
+              <span className="relative z-10 font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 bg-[length:200%_auto] animate-shine">
+                BASUDEV
+              </span>
+            </span>
+            <span>All systems nominal.</span>
+          </div>
+        </footer>
       </main>
     </div>
     </>

@@ -25,8 +25,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${kodeMono.variable} antialiased`}>
-      <body className="font-mono bg-white text-gray-900">
+    <html lang="en" className={`${kodeMono.variable} antialiased`} suppressHydrationWarning>
+      <body className="font-mono bg-white text-gray-900" suppressHydrationWarning>
         <SplashScreen />
         {children}
         <Toaster theme="system" position="bottom-center" />
