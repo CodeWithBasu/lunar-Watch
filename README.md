@@ -73,6 +73,45 @@ lunar-Watch/
 └── tailwind.config.ts       # Tailwind v4 configuration
 ```
 
+### System Architecture Diagram
+
+```mermaid
+flowchart TB
+    %% Styling
+    classDef default fill:#0f172a,stroke:#334155,stroke-width:1px,color:#fff
+    classDef core fill:#0B3D91,stroke:#60a5fa,stroke-width:2px,color:#fff
+    classDef hardware fill:#b45309,stroke:#fcd34d,stroke-width:2px,color:#fff
+    classDef native fill:#166534,stroke:#4ade80,stroke-width:2px,color:#fff
+
+    subgraph WebApp ["Next.js 15 Core Engine"]
+        UI["UI Layer (Tailwind v4)"]
+        Motion["Framer Motion (3D Holographics)"]
+        Math["Julian Date Lunar Calculator"]
+    end
+
+    subgraph BrowserAPIs ["Hardware Sensors"]
+        Geo["Geolocation API (Telemetry)"]
+        Audio["Web Audio API (Sci-Fi Haptics)"]
+    end
+
+    subgraph Mobile ["Android Native Environment"]
+        Capacitor["Capacitor Bridge"]
+        Apk["Android APK Build"]
+    end
+
+    UI <--> Motion
+    UI --> Math
+    UI --> Geo
+    UI --> Audio
+
+    WebApp ==> Capacitor
+    Capacitor ==> Apk
+
+    class Math core
+    class Geo,Audio hardware
+    class Mobile,Capacitor,Apk native
+```
+
 ---
 
 ## ⚙️ Project Workflow
