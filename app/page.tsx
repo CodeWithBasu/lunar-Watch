@@ -11,6 +11,7 @@ import { Banner } from "@/components/ui/banner"
 import { NasaFeed } from "@/components/ui/nasa-feed"
 import { ARViewer } from "@/components/ui/ar-viewer"
 import { MoonGallery } from "@/components/ui/moon-gallery"
+import { SubscribeAlerts } from "@/components/ui/subscribe-alerts"
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion"
 
 const MoonVisual = ({ phase, illumination }: { phase: number, illumination: number }) => {
@@ -725,7 +726,11 @@ export default function MoonTracker() {
           <MoonGallery />
         </section>
 
-        <div className="text-center pt-8 pointer-events-auto">
+        <section className="pointer-events-auto pb-16">
+          <SubscribeAlerts />
+        </section>
+
+        <div className="text-center pt-8 pointer-events-auto border-t border-gray-100 dark:border-neutral-900 pb-16">
           <button
             onClick={() => {
               playTechClick()
