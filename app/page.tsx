@@ -588,7 +588,7 @@ export default function MoonTracker() {
             </span>
           </div>
 
-          {mounted && !isMobile && (
+          {mounted && (
             <div className="absolute right-6 top-6 sm:right-12 sm:top-12">
               <HorizontalThemeWipeToggle direction="left" />
             </div>
@@ -600,12 +600,6 @@ export default function MoonTracker() {
             
             <div className="mt-6 pointer-events-auto flex flex-col sm:flex-row items-center justify-center gap-4">
               <StarButton text="FAVORITE" />
-              
-              {mounted && isMobile && (
-                <div className="py-2">
-                  <HorizontalThemeWipeToggle direction="left" />
-                </div>
-              )}
               
               <button 
                 onClick={() => setArMode(true)} 
