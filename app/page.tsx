@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
-import { Moon, ChevronLeft, ChevronRight, Crosshair, AlertCircle } from "lucide-react"
+import { Moon, ChevronLeft, ChevronRight, Crosshair, AlertCircle, Github } from "lucide-react"
 import { HorizontalThemeWipeToggle } from "@/components/ui/theme-wipe-toggle"
 import { Meteors } from "@/components/ui/meteors"
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern"
@@ -758,6 +758,30 @@ export default function MoonTracker() {
             </div>
           </button>
         </div>
+
+        <footer className="pointer-events-auto border-t border-gray-100 dark:border-neutral-900 pt-8 pb-4 flex flex-col items-center justify-center gap-6">
+          <a
+            href="https://github.com/CodeWithBasu/lunar-Watch"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-neutral-900 transition-colors"
+          >
+            <Github className="w-5 h-5 text-gray-700 dark:text-gray-300 group-hover:text-black dark:group-hover:text-white transition-colors" />
+            <span className="font-mono text-sm font-semibold text-gray-600 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white transition-colors">
+              Source Code
+            </span>
+          </a>
+          
+          <div className="flex items-center gap-2 font-mono text-xs text-gray-500 dark:text-gray-400">
+            <span>&copy; {new Date().getFullYear()}</span>
+            <span className="inline-block relative overflow-hidden group">
+              <span className="relative z-10 font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 bg-[length:200%_auto] animate-shine">
+                BASUDEV
+              </span>
+            </span>
+            <span>All systems nominal.</span>
+          </div>
+        </footer>
       </main>
     </div>
     </>
