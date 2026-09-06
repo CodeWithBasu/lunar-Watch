@@ -10,6 +10,7 @@ import { StarButton } from "@/components/ui/star-button"
 import { Banner } from "@/components/ui/banner"
 import { NasaFeed } from "@/components/ui/nasa-feed"
 import { ARViewer } from "@/components/ui/ar-viewer"
+import { MoonGallery } from "@/components/ui/moon-gallery"
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion"
 
 const MoonVisual = ({ phase, illumination }: { phase: number, illumination: number }) => {
@@ -718,6 +719,10 @@ export default function MoonTracker() {
 
         <section className="pointer-events-auto">
           <NasaFeed />
+        </section>
+
+        <section className="pointer-events-auto mt-16">
+          <MoonGallery />
         </section>
 
         <div className="text-center pt-8 pointer-events-auto">
