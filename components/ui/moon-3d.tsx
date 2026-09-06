@@ -71,10 +71,10 @@ export function Moon3D({ phase }: Moon3DProps) {
     <div className="w-full h-full min-h-[300px] cursor-move flex items-center justify-center">
       <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
         <OrbitControls 
-          enableZoom={true} 
+          enableZoom={false} 
           enablePan={false}
-          minDistance={2.5}
-          maxDistance={10}
+          minDistance={5}
+          maxDistance={5}
           autoRotate={false}
         />
         <Suspense fallback={null}>
