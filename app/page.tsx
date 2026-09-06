@@ -70,7 +70,7 @@ const MoonVisual = ({ phase, illumination }: { phase: number, illumination: numb
           />
         </g>
       </svg>
-    </div></>
+    </div>
   );
 };
 
@@ -735,6 +735,7 @@ export default function MoonTracker() {
           </button>
         </div>
       </main>
-    </div></>
+    </div>
+    </>
   )
 }
