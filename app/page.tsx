@@ -8,8 +8,70 @@ import { Meteors } from "@/components/ui/meteors"
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern"
 import { StarButton } from "@/components/ui/star-button"
 import { Banner } from "@/components/ui/banner"
-import { Moon3D } from "@/components/ui/moon-3d"
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion"
+
+const MoonVisual = ({ phase, illumination }: { phase: number, illumination: number }) => {
+  const getMoonPath = (phase: number) => {
+    const radius = 40;
+    const centerX = 50;
+    const centerY = 50;
+
+    // Convert phase to a sweep amount.
+    // phase 0 = new moon, 0.25 = first quarter, 0.5 = full moon, 0.75 = last quarter
+    let path = "";
+    
+    // Outer right arc (static)
+    const rightArc = `A ${radius} ${radius} 0 0 1 50 90`;
+    // Outer left arc (static)
+    const leftArc = `A ${radius} ${radius} 0 0 1 50 10`;
+
+    if (phase <= 0.25) {
+      // New Moon to First Quarter: Waxing Crescent
+      // Shadow covers left side and curves into the right side
+      const sweepX = radius - (phase * 4 * radius); // 40 to 0
+      path = `M 50 10 ${rightArc} A ${sweepX} ${radius} 0 0 0 50 10 Z`;
+    } else if (phase <= 0.5) {
+      // First Quarter to Full Moon: Waxing Gibbous
+      const sweepX = ((phase - 0.25) * 4 * radius); // 0 to 40
+      path = `M 50 10 ${rightArc} A ${sweepX} ${radius} 0 0 1 50 10 Z`;
+    } else if (phase <= 0.75) {
+      // Full Moon to Last Quarter: Waning Gibbous
+      const sweepX = radius - ((phase - 0.5) * 4 * radius); // 40 to 0
+      path = `M 50 90 ${leftArc} A ${sweepX} ${radius} 0 0 1 50 90 Z`;
+    } else {
+      // Last Quarter to New Moon: Waning Crescent
+      const sweepX = ((phase - 0.75) * 4 * radius); // 0 to 40
+      path = `M 50 90 ${leftArc} A ${sweepX} ${radius} 0 0 0 50 90 Z`;
+    }
+
+    return path;
+  };
+
+  return (
+    <div className="relative w-48 h-48 md:w-64 md:h-64 mx-auto drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+      <svg width="100%" height="100%" viewBox="0 0 100 100" className="pointer-events-none drop-shadow-2xl">
+        <defs>
+          <clipPath id="moon-circle">
+            <circle cx="50" cy="50" r="40" />
+          </clipPath>
+          <mask id="moon-phase-mask">
+            {getMoonPath(phase) && <path d={getMoonPath(phase)} fill="white" />}
+          </mask>
+        </defs>
+        
+        {/* Exact uploaded user image, masked by phase */}
+        <g mask="url(#moon-phase-mask)">
+          <image 
+            href="/moon-reference.png" 
+            x="10" y="10" width="80" height="80" 
+            clipPath="url(#moon-circle)"
+            preserveAspectRatio="xMidYMid slice"
+          />
+        </g>
+      </svg>
+    </div>
+  );
+};
 
 interface MoonPhase {
   phase: number
@@ -574,7 +636,7 @@ export default function MoonTracker() {
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   className="w-full space-y-6 absolute pointer-events-auto"
                 >
-                  <Moon3D phase={currentMoon.phase} />
+                  <MoonVisual phase={currentMoon.phase} illumination={currentMoon.illumination} />
                   
                   <div>
                     <h3 className="text-2xl font-mono text-gray-900 dark:text-gray-100 mb-2 font-medium">
