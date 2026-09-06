@@ -31,7 +31,7 @@ const MoonSphere = ({ phase }: { phase: number }) => {
   // Phase 0.5 = Full Moon (light from front)
   // Phase 0.75 = Last Quarter (light from left)
   const lightPosition = useMemo(() => {
-    // Math.PI * 2 is a full rotation. We offset by Math.PI so 0 phase is in the back (-Z)
+    // Math.PI * 2 is a full rotation. Offset by PI so 0 phase is New Moon
     const angle = (phase * Math.PI * 2) + Math.PI;
     const distance = 10;
     return new THREE.Vector3(
@@ -43,22 +43,21 @@ const MoonSphere = ({ phase }: { phase: number }) => {
 
   return (
     <>
-      <ambientLight intensity={0.4} />
+      <ambientLight intensity={0.5} color="#ffffff" />
       <directionalLight 
         position={lightPosition} 
-        intensity={4.0} 
-        castShadow
+        intensity={5.0} 
+        color="#ffffff"
       />
       
-      <mesh ref={meshRef} castShadow receiveShadow>
+      <mesh ref={meshRef}>
         <sphereGeometry args={[2, 64, 64]} />
         <meshStandardMaterial 
           map={colorMap} 
-          bumpMap={bumpMap}
-          bumpScale={0.01}
-          roughness={1.0}
-          metalness={0.0}
           color="#ffffff"
+          emissive="#2a2a2a"
+          roughness={0.9}
+          metalness={0.1}
         />
       </mesh>
     </>
