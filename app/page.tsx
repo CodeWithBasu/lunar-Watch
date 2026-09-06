@@ -9,6 +9,7 @@ import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern"
 import { StarButton } from "@/components/ui/star-button"
 import { Banner } from "@/components/ui/banner"
 import { NasaFeed } from "@/components/ui/nasa-feed"
+import { ARViewer } from "@/components/ui/ar-viewer"
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion"
 
 const MoonVisual = ({ phase, illumination }: { phase: number, illumination: number }) => {
