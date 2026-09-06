@@ -1,11 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { Bell, Smartphone, Mail, ArrowRight, CheckCircle2 } from "lucide-react"
+import { Bell, Mail, ArrowRight, CheckCircle2 } from "lucide-react"
 
 export function SubscribeAlerts() {
   const [contact, setContact] = useState("")
-  const [type, setType] = useState<"sms" | "email">("sms")
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
 
@@ -18,7 +17,7 @@ export function SubscribeAlerts() {
       const res = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contact, type })
+        body: JSON.stringify({ contact, type: "email" })
       })
       
       if (!res.ok) throw new Error("Failed to subscribe")
@@ -58,42 +57,28 @@ export function SubscribeAlerts() {
       
       <div className="flex items-center gap-3 mb-2 text-blue-600 dark:text-blue-400">
         <Bell className="w-5 h-5 animate-bounce" />
-        <h3 className="font-mono text-sm tracking-widest uppercase font-semibold">Lunar Alerts</h3>
+        <h3 className="font-mono text-sm tracking-widest uppercase font-semibold">Lunar Alerts by BASUDEV</h3>
       </div>
       
       <h4 className="text-2xl font-bold text-gray-900 dark:text-white leading-tight mb-2">
         Never miss a cosmic event.
       </h4>
       <p className="text-sm text-gray-600 dark:text-gray-400 mb-8 font-mono">
-        Get automated SMS or Email notifications for eclipses, supermoons, and perfect stargazing conditions.
+        Get automated Email notifications for eclipses, supermoons, and perfect stargazing conditions.
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
-        <div className="flex gap-4">
-          <button
-            type="button"
-            onClick={() => setType("sms")}
-            className={`flex-1 py-3 rounded-xl flex items-center justify-center gap-2 font-mono text-sm font-bold transition-all ${type === "sms" ? "bg-blue-600 text-white shadow-lg shadow-blue-500/25" : "bg-gray-100 dark:bg-neutral-900 text-gray-500 hover:bg-gray-200 dark:hover:bg-neutral-800"}`}
-          >
-            <Smartphone className="w-4 h-4" /> SMS
-          </button>
-          <button
-            type="button"
-            onClick={() => setType("email")}
-            className={`flex-1 py-3 rounded-xl flex items-center justify-center gap-2 font-mono text-sm font-bold transition-all ${type === "email" ? "bg-blue-600 text-white shadow-lg shadow-blue-500/25" : "bg-gray-100 dark:bg-neutral-900 text-gray-500 hover:bg-gray-200 dark:hover:bg-neutral-800"}`}
-          >
-            <Mail className="w-4 h-4" /> EMAIL
-          </button>
-        </div>
-
         <div className="relative">
+          <div className="absolute left-4 top-0 bottom-0 flex items-center justify-center pointer-events-none">
+            <Mail className="w-5 h-5 text-gray-400" />
+          </div>
           <input 
-            type={type === "email" ? "email" : "tel"}
+            type="email"
             required
             value={contact}
             onChange={(e) => setContact(e.target.value)}
-            placeholder={type === "email" ? "astronomer@nasa.gov" : "+1 (555) 000-0000"}
-            className="w-full px-6 py-4 rounded-xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 font-mono"
+            placeholder="astronomer@nasa.gov"
+            className="w-full pl-12 pr-16 py-4 rounded-xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 font-mono"
           />
           <button 
             type="submit"
