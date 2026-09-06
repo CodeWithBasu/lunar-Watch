@@ -70,7 +70,7 @@ const MoonVisual = ({ phase, illumination }: { phase: number, illumination: numb
           />
         </g>
       </svg>
-    </div>
+    </div></>
   );
 };
 
@@ -135,7 +135,7 @@ export default function MoonTracker() {
   const [location, setLocation] = useState<{lat: number, lng: number} | null>(null)
   const [countdown, setCountdown] = useState<string>("CALCULATING...")
   const [currentAlertIndex, setCurrentAlertIndex] = useState(0)
-  const [dynamicAlerts, setDynamicAlerts] = useState<string[]>(MOCK_ALERTS)
+  const [dynamicAlerts, setDynamicAlerts] = useState<string[]>(MOCK_ALERTS); const [arMode, setArMode] = useState(false);
 
   // Generate dynamic alerts based on date and moon phase
   useEffect(() => {
@@ -184,12 +184,11 @@ export default function MoonTracker() {
   const rotateY = useTransform(mouseX, [0, 1], [-15, 15]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    const y = (e.clientY - rect.top) / rect.height;
-    mouseX.set(x);
-    mouseY.set(y);
-  }
+    const { clientX, clientY } = e;
+    const { innerWidth, innerHeight } = window;
+    mouseX.set(clientX / innerWidth);
+    mouseY.set(clientY / innerHeight);
+  };
 
   // Fetch Telemetry
   useEffect(() => {
@@ -528,18 +527,20 @@ export default function MoonTracker() {
           <div className="w-8 h-8 mx-auto mb-4 animate-spin">
             <Moon className="w-full h-full text-gray-400" />
           </div>
-          <p className="text-gray-600 font-mono text-sm">Loading...</p>
+          <p className="font-mono text-sm text-gray-500 tracking-widest uppercase">Initializing Systems</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div 
-      className="min-h-screen bg-white dark:bg-black transition-colors duration-300 relative overflow-hidden"
-      onMouseMove={handleMouseMove}
-    >
-      <Banner id="live-tracker-banner" variant="rainbow" height="2.5rem" className="flex items-center gap-2">
+    <>
+      {arMode && <ARViewer onClose={() => setArMode(false)} />}
+      <div 
+        className="min-h-screen bg-white dark:bg-black transition-colors duration-300 relative overflow-hidden"
+        onMouseMove={handleMouseMove}
+      >
+        <Banner id="live-tracker-banner" variant="rainbow" height="2.5rem" className="flex items-center gap-2">
         <AlertCircle className="w-4 h-4 flex-shrink-0 animate-pulse" />
         <span key={currentAlertIndex} className="font-mono text-xs sm:text-sm font-bold truncate transition-opacity duration-500">
           {dynamicAlerts[currentAlertIndex] || ""}
@@ -582,8 +583,15 @@ export default function MoonTracker() {
           <div className="text-center flex flex-col items-center">
             <h1 className="text-3xl font-mono text-gray-900 dark:text-gray-100 tracking-wide font-semibold">Moon Tracker</h1>
             <p className="text-gray-500 dark:text-gray-400 mt-2 font-mono text-sm">{"Lunar phase calendar, by BASUDEV."}</p>
-            <div className="mt-6 pointer-events-auto">
+            <div className="mt-6 pointer-events-auto flex flex-col items-center gap-3">
               <StarButton text="FAVORITE" />
+              <button 
+                onClick={() => setArMode(true)} 
+                className="w-[200px] flex items-center justify-center gap-2 px-6 py-2 rounded-full border border-blue-500/30 bg-blue-500/5 hover:bg-blue-500/10 transition-all active:scale-95 font-mono text-xs font-bold text-blue-600 dark:text-blue-400 tracking-widest"
+              >
+                <Crosshair className="w-4 h-4" /> 
+                ENTER AR MODE
+              </button>
             </div>
           </div>
         </div>
@@ -727,6 +735,6 @@ export default function MoonTracker() {
           </button>
         </div>
       </main>
-    </div>
+    </div></>
   )
 }
