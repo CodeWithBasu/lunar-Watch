@@ -142,6 +142,10 @@ export default function MoonTracker() {
   const [dynamicAlerts, setDynamicAlerts] = useState<string[]>(MOCK_ALERTS); const [arMode, setArMode] = useState(false);
   const [mounted, setMounted] = useState(false)
   
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+  
   const isMobile = useMediaQuery("(max-width: 768px)")
 
   // Generate dynamic alerts based on date and moon phase
