@@ -547,9 +547,9 @@ export default function MoonTracker() {
         className="min-h-screen bg-white dark:bg-black transition-colors duration-300 relative overflow-hidden"
         onMouseMove={handleMouseMove}
       >
-        <Banner id="live-tracker-banner" variant="rainbow" height="2.5rem" className="flex items-center gap-2">
+        <Banner id="live-tracker-banner" variant="rainbow" height="auto" className="flex items-center justify-center gap-2 py-3 min-h-[3rem]">
         <AlertCircle className="w-4 h-4 flex-shrink-0 animate-pulse" />
-        <span key={currentAlertIndex} className="font-mono text-xs sm:text-sm font-bold truncate transition-opacity duration-500">
+        <span key={currentAlertIndex} className="font-mono text-xs sm:text-sm font-bold truncate transition-opacity duration-500 leading-none">
           {dynamicAlerts[currentAlertIndex] || ""}
         </span>
       </Banner>

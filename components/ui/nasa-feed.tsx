@@ -9,6 +9,7 @@ export function NasaFeed() {
   const [data, setData] = useState<NasaApodResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   useEffect(() => {
     async function loadData() {
@@ -82,9 +83,19 @@ export function NasaFeed() {
           </div>
         )}
         
-        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-4 hover:line-clamp-none transition-all">
+        <p 
+          onClick={() => setIsExpanded(!isExpanded)}
+          className={`text-sm text-gray-600 dark:text-gray-300 leading-relaxed cursor-pointer transition-all ${isExpanded ? '' : 'line-clamp-4'}`}
+        >
           {data.explanation}
         </p>
+        
+        <button 
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="text-xs font-mono text-blue-500 hover:text-blue-600 dark:hover:text-blue-400 font-medium"
+        >
+          {isExpanded ? "SHOW LESS" : "READ MORE"}
+        </button>
 
         <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
           <span className="text-xs font-mono text-gray-500">{data.date}</span>
