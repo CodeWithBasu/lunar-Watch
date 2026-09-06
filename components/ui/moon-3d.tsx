@@ -14,8 +14,8 @@ const MoonSphere = ({ phase }: { phase: number }) => {
   
   // Load standard three.js examples textures (reliable CDNs)
   const [colorMap, bumpMap] = useTexture([
-    "https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/moon_1024.jpg",
-    "https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/moon_1024.jpg" // Using color as bump since standard bump isn't directly available, it still gives depth
+    "https://upload.wikimedia.org/wikipedia/commons/e/e1/FullMoon2010.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/e/e1/FullMoon2010.jpg" // Using color as bump since standard bump isn't directly available, it still gives depth
   ]);
 
   // Rotate slowly over time
@@ -43,10 +43,10 @@ const MoonSphere = ({ phase }: { phase: number }) => {
 
   return (
     <>
-      <ambientLight intensity={0.05} />
+      <ambientLight intensity={0.4} />
       <directionalLight 
         position={lightPosition} 
-        intensity={2.5} 
+        intensity={4.0} 
         castShadow
       />
       
@@ -55,14 +55,17 @@ const MoonSphere = ({ phase }: { phase: number }) => {
         <meshStandardMaterial 
           map={colorMap} 
           bumpMap={bumpMap}
-          bumpScale={0.02}
-          roughness={0.8}
-          metalness={0.1}
+          bumpScale={0.01}
+          roughness={1.0}
+          metalness={0.0}
+          color="#ffffff"
         />
       </mesh>
     </>
   );
 };
+
+import { Suspense } from "react";
 
 export function Moon3D({ phase }: Moon3DProps) {
   return (
@@ -75,7 +78,9 @@ export function Moon3D({ phase }: Moon3DProps) {
           maxDistance={10}
           autoRotate={false}
         />
-        <MoonSphere phase={phase} />
+        <Suspense fallback={null}>
+          <MoonSphere phase={phase} />
+        </Suspense>
       </Canvas>
     </div>
   );
