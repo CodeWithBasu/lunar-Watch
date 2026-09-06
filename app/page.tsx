@@ -8,6 +8,7 @@ import { Meteors } from "@/components/ui/meteors"
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern"
 import { StarButton } from "@/components/ui/star-button"
 import { Banner } from "@/components/ui/banner"
+import { Moon3D } from "@/components/ui/moon-3d"
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion"
 
 interface MoonPhase {
@@ -573,7 +574,7 @@ export default function MoonTracker() {
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   className="w-full space-y-6 absolute pointer-events-auto"
                 >
-                  <MoonVisual phase={currentMoon.phase} illumination={currentMoon.illumination} />
+                  <Moon3D phase={currentMoon.phase} />
                   
                   <div>
                     <h3 className="text-2xl font-mono text-gray-900 dark:text-gray-100 mb-2 font-medium">
