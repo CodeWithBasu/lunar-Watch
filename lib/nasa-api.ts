@@ -15,8 +15,7 @@ const NASA_BASE_URL = "https://api.nasa.gov";
 export async function getAstronomyPictureOfTheDay(): Promise<NasaApodResponse | null> {
   try {
     const response = await fetch(
-      `${NASA_BASE_URL}/planetary/apod?api_key=${NASA_API_KEY}`,
-      { next: { revalidate: 3600 } }
+      `${NASA_BASE_URL}/planetary/apod?api_key=${NASA_API_KEY}`
     );
 
     if (!response.ok) {

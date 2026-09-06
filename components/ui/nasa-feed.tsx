@@ -8,12 +8,19 @@ import { motion } from "framer-motion"
 export function NasaFeed() {
   const [data, setData] = useState<NasaApodResponse | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     async function loadData() {
       try {
         const result = await getAstronomyPictureOfTheDay()
-        setData(result)
+        if (result) {
+          setData(result)
+        } else {
+          setError("Failed to load NASA APOD. (Rate limit or network error)")
+        }
+      } catch (e) {
+        setError("An exception occurred while fetching NASA data.")
       } finally {
         setLoading(false)
       }
@@ -23,13 +30,20 @@ export function NasaFeed() {
 
   if (loading) {
     return (
-      <div className="w-full max-w-2xl mx-auto mt-12 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-black/50 backdrop-blur animate-pulse h-64 flex items-center justify-center">
-        <Rocket className="w-8 h-8 text-gray-400 animate-bounce" />
+      <div className="w-full max-w-2xl mx-auto mt-12 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-black/50 backdrop-blur animate-pulse h-64 flex flex-col items-center justify-center gap-4">
+        <Rocket className="w-8 h-8 text-blue-500 animate-bounce" />
+        <p className="text-sm font-mono text-gray-500">Connecting to NASA Servers...</p>
       </div>
     )
   }
 
-  if (!data) return null;
+  if (error || !data) {
+    return (
+      <div className="w-full max-w-2xl mx-auto mt-12 p-6 rounded-2xl border border-red-200 dark:border-red-900/30 bg-red-50/50 dark:bg-red-900/10 backdrop-blur flex flex-col items-center justify-center gap-2">
+        <p className="text-sm font-mono text-red-500 text-center">{error || "NASA Feed Unavailable"}</p>
+      </div>
+    )
+  }
 
   return (
     <motion.div 
