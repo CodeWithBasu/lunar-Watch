@@ -43,19 +43,19 @@ const MoonSphere = ({ phase }: { phase: number }) => {
 
   return (
     <>
-      <ambientLight intensity={0.5} color="#ffffff" />
+      <ambientLight intensity={0.5} color="#b0d0ff" />
       <directionalLight 
         position={lightPosition} 
         intensity={5.0} 
-        color="#ffffff"
+        color="#e6f2ff"
       />
       
       <mesh ref={meshRef}>
         <sphereGeometry args={[2, 64, 64]} />
         <meshStandardMaterial 
           map={colorMap} 
-          color="#ffffff"
-          emissive="#2a2a2a"
+          color="#d6eaff"
+          emissive="#0d1b2a"
           roughness={0.9}
           metalness={0.1}
         />
