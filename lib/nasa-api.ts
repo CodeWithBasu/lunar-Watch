@@ -19,14 +19,13 @@ export async function getAstronomyPictureOfTheDay(): Promise<NasaApodResponse | 
     );
 
     if (!response.ok) {
-      console.error("NASA API Error:", response.statusText);
+      // Rate limit or other API error - fail silently so UI error state takes over
       return null;
     }
 
     const data: NasaApodResponse = await response.json();
     return data;
   } catch (error) {
-    console.error("Failed to fetch NASA data:", error);
     return null;
   }
 }
