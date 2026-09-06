@@ -43,19 +43,19 @@ const MoonSphere = ({ phase }: { phase: number }) => {
 
   return (
     <>
-      <ambientLight intensity={0.5} color="#b0d0ff" />
+      <ambientLight intensity={0.6} color="#ffffff" />
       <directionalLight 
         position={lightPosition} 
-        intensity={5.0} 
-        color="#e6f2ff"
+        intensity={6.0} 
+        color="#ffffff"
       />
       
       <mesh ref={meshRef}>
         <sphereGeometry args={[2, 64, 64]} />
         <meshStandardMaterial 
           map={colorMap} 
-          color="#d6eaff"
-          emissive="#0d1b2a"
+          color="#ffffff"
+          emissive="#222222"
           roughness={0.9}
           metalness={0.1}
         />
@@ -68,7 +68,7 @@ import { Suspense } from "react";
 
 export function Moon3D({ phase }: Moon3DProps) {
   return (
-    <div className="w-full h-full min-h-[300px] cursor-move flex items-center justify-center">
+    <div className="w-full h-full min-h-[300px] cursor-move flex items-center justify-center contrast-125 brightness-110">
       <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
         <OrbitControls 
           enableZoom={false} 
