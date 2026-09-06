@@ -12,6 +12,7 @@ import { NasaFeed } from "@/components/ui/nasa-feed"
 import { ARViewer } from "@/components/ui/ar-viewer"
 import { MoonGallery } from "@/components/ui/moon-gallery"
 import { SubscribeAlerts } from "@/components/ui/subscribe-alerts"
+import { useMediaQuery } from "@/hooks/use-media-query"
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion"
 
 const MoonVisual = ({ phase, illumination }: { phase: number, illumination: number }) => {
@@ -139,6 +140,9 @@ export default function MoonTracker() {
   const [countdown, setCountdown] = useState<string>("CALCULATING...")
   const [currentAlertIndex, setCurrentAlertIndex] = useState(0)
   const [dynamicAlerts, setDynamicAlerts] = useState<string[]>(MOCK_ALERTS); const [arMode, setArMode] = useState(false);
+  const [mounted, setMounted] = useState(false)
+  
+  const isMobile = useMediaQuery("(max-width: 768px)")
 
   // Generate dynamic alerts based on date and moon phase
   useEffect(() => {
@@ -580,14 +584,25 @@ export default function MoonTracker() {
             </span>
           </div>
 
-          <div className="absolute right-6 top-6 sm:right-12 sm:top-12">
-            <HorizontalThemeWipeToggle direction="left" />
-          </div>
+          {mounted && !isMobile && (
+            <div className="absolute right-6 top-6 sm:right-12 sm:top-12">
+              <HorizontalThemeWipeToggle direction="left" />
+            </div>
+          )}
+
           <div className="text-center flex flex-col items-center">
-            <h1 className="text-3xl font-mono text-gray-900 dark:text-gray-100 tracking-wide font-semibold">Moon Tracker</h1>
+            <h1 className="text-3xl font-mono text-gray-900 dark:text-gray-100 tracking-wide font-semibold mt-12 sm:mt-0">Moon Tracker</h1>
             <p className="text-gray-500 dark:text-gray-400 mt-2 font-mono text-sm">{"Lunar phase calendar, by BASUDEV."}</p>
-            <div className="mt-6 pointer-events-auto flex flex-col items-center gap-3">
+            
+            <div className="mt-6 pointer-events-auto flex flex-col sm:flex-row items-center justify-center gap-4">
               <StarButton text="FAVORITE" />
+              
+              {mounted && isMobile && (
+                <div className="py-2">
+                  <HorizontalThemeWipeToggle direction="left" />
+                </div>
+              )}
+              
               <button 
                 onClick={() => setArMode(true)} 
                 className="w-[200px] flex items-center justify-center gap-2 px-6 py-2 rounded-full border border-blue-500/30 bg-blue-500/5 hover:bg-blue-500/10 transition-all active:scale-95 font-mono text-xs font-bold text-blue-600 dark:text-blue-400 tracking-widest"

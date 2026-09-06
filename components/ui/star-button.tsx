@@ -9,7 +9,7 @@ export interface StarButtonProps {
   initialCount?: number;
 }
 
-export const StarButton = ({ text = "WISHLIST", initialCount = 1284 }: StarButtonProps) => {
+export const StarButton = ({ text = "WISHLIST", initialCount = 99 }: StarButtonProps) => {
   const [isChecked, setIsChecked] = useState(false);
   const [count, setCount] = useState(initialCount);
 
