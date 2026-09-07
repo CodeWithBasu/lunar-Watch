@@ -4,6 +4,10 @@ const config: CapacitorConfig = {
   appId: 'com.basu.moontracker',
   appName: 'Moon Tracker',
   webDir: 'out',
+  server: {
+    url: 'https://basudev-moon.vercel.app',
+    cleartext: true
+  },
   plugins: {
     SplashScreen: {
       launchShowDuration: 0,
