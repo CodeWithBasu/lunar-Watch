@@ -14,6 +14,18 @@ export const StarButton = ({ text = "WISHLIST", initialCount = 99 }: StarButtonP
   const [count, setCount] = useState(initialCount);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isChecked) {
+      // Prevent un-wishlisting and optionally show a playful toast
+      toast.success(`Already in your ${text.toLowerCase()}! 🚀`, {
+        style: {
+          background: '#000',
+          color: '#FBBF24',
+          border: '1px solid #FBBF24',
+        }
+      });
+      return;
+    }
+
     const checked = e.target.checked;
     setIsChecked(checked);
     if (checked) {
@@ -25,9 +37,6 @@ export const StarButton = ({ text = "WISHLIST", initialCount = 99 }: StarButtonP
           border: '1px solid #FBBF24',
         }
       });
-    } else {
-      setCount((prev) => prev - 1);
-      toast("Removed from " + text.toLowerCase());
     }
   };
 
