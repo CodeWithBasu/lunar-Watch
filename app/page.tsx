@@ -10,6 +10,7 @@ import { StarButton } from "@/components/ui/star-button"
 import { Banner } from "@/components/ui/banner"
 import { NasaFeed } from "@/components/ui/nasa-feed"
 import { ARViewer } from "@/components/ui/ar-viewer"
+import { BuyMeCoffee } from "@/components/ui/buy-me-coffee"
 import { MoonGallery } from "@/components/ui/moon-gallery"
 import { SubscribeAlerts } from "@/components/ui/subscribe-alerts"
 import { useMediaQuery } from "@/hooks/use-media-query"
@@ -760,17 +761,21 @@ export default function MoonTracker() {
         </div>
 
         <footer className="pointer-events-auto border-t border-gray-100 dark:border-neutral-900 pt-8 pb-4 flex flex-col items-center justify-center gap-6">
-          <a
-            href="https://github.com/CodeWithBasu/lunar-Watch"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-neutral-900 transition-colors"
-          >
-            <Github className="w-5 h-5 text-gray-700 dark:text-gray-300 group-hover:text-black dark:group-hover:text-white transition-colors" />
-            <span className="font-mono text-sm font-semibold text-gray-600 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white transition-colors">
-              Source Code
-            </span>
-          </a>
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <a
+              href="https://github.com/CodeWithBasu/lunar-Watch"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-neutral-900 transition-colors h-12"
+            >
+              <Github className="w-5 h-5 text-gray-700 dark:text-gray-300 group-hover:text-black dark:group-hover:text-white transition-colors" />
+              <span className="font-mono text-sm font-semibold text-gray-600 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white transition-colors">
+                Source Code
+              </span>
+            </a>
+
+            <BuyMeCoffee classname="h-12" />
+          </div>
           
           <div className="flex items-center gap-2 font-mono text-xs text-gray-500 dark:text-gray-400">
             <span>&copy; {new Date().getFullYear()}</span>
