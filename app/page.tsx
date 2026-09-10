@@ -10,7 +10,7 @@ import { StarButton } from "@/components/ui/star-button"
 import { Banner } from "@/components/ui/banner"
 import { NasaFeed } from "@/components/ui/nasa-feed"
 import { ARViewer } from "@/components/ui/ar-viewer"
-import { BuyMeCoffee } from "@/components/ui/buy-me-coffee"
+import BuyMeCoffee from "@/components/ui/buy-me-coffee"
 import { MoonGallery } from "@/components/ui/moon-gallery"
 import { SubscribeAlerts } from "@/components/ui/subscribe-alerts"
 import { useMediaQuery } from "@/hooks/use-media-query"
@@ -760,6 +760,10 @@ export default function MoonTracker() {
           </button>
         </div>
 
+        <section className="pointer-events-auto pb-16 w-full flex justify-center">
+          <BuyMeCoffee />
+        </section>
+
         <footer className="pointer-events-auto border-t border-gray-100 dark:border-neutral-900 pt-8 pb-4 flex flex-col items-center justify-center gap-6">
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <a
@@ -773,8 +777,6 @@ export default function MoonTracker() {
                 Source Code
               </span>
             </a>
-
-            <BuyMeCoffee classname="h-12" />
           </div>
           
           <div className="flex items-center gap-2 font-mono text-xs text-gray-500 dark:text-gray-400">
